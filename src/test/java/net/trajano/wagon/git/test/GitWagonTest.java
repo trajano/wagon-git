@@ -3,17 +3,50 @@ package net.trajano.wagon.git.test;
 import java.io.File;
 import java.io.IOException;
 
+import net.trajano.wagon.git.GitWagon;
+
 import org.apache.maven.wagon.StreamingWagonTestCase;
-import org.apache.maven.wagon.repository.Repository;
-import org.apache.maven.wagon.resource.Resource;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.RefUpdate;
 
+/**
+ * Tests {@link GitWagon}.
+ */
 public class GitWagonTest extends StreamingWagonTestCase {
+    /**
+     * Git remote directory.
+     */
     private File gitRemoteDirectory;
 
+    /**
+     * Protocol hint.
+     * 
+     * @return "git"
+     */
+    @Override
+    protected String getProtocol() {
+        return "git";
+    }
+
+    /**
+     * Unused in the tests.
+     */
+    @Override
+    protected int getTestRepositoryPort() {
+        return 0;
+    }
+
+    /**
+     * Gets the test repository URI based on {@link #gitRemoteDirectory}.
+     */
+    @Override
+    protected String getTestRepositoryUrl() throws IOException {
+        return "git:" + gitRemoteDirectory.toURI() + "?gh-pages";
+    }
+
+    /**
+     * Defines the {@link #gitRemoteDirectory}.
+     */
     @Override
     protected void setUp() throws Exception {
         gitRemoteDirectory = File.createTempFile("remote", null);
@@ -26,38 +59,24 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void setupWagonTestingFixtures() throws Exception {
-        Git git = Git.init().setDirectory(gitRemoteDirectory).call();
+        Git.init().setDirectory(gitRemoteDirectory).call();
         File.createTempFile("temp", null, gitRemoteDirectory);
     }
 
-    @Override
-    protected void tearDownWagonTestingFixtures() throws Exception {
-        FileUtils.deleteDirectory(gitRemoteDirectory);
-    }
-
-    @Override
-    protected String getTestRepositoryUrl() throws IOException {
-        return "git:" + gitRemoteDirectory.toURI() + "?gh-pages";
-    }
-
-    @Override
-    protected String getProtocol() {
-        return "git";
-    }
-
-    @Override
-    protected int getTestRepositoryPort() {
-        return 0;
-    }
-
+    /**
+     * Unable to change how the timestamps are set, so getIfNewer is not
+     * testable.
+     */
     @Override
     protected boolean supportsGetIfNewer() {
         return false;
     }
 
+    /**
+     * Remove the "remote" directory.
+     */
     @Override
-    protected long getExpectedLastModifiedOnGet(Repository repository,
-            Resource resource) {
-        return new File(gitRemoteDirectory, resource.getName()).lastModified();
+    protected void tearDownWagonTestingFixtures() throws Exception {
+        FileUtils.deleteDirectory(gitRemoteDirectory);
     }
 }

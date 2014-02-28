@@ -33,7 +33,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit.java7</artifactId>
+			<artifactId>org.eclipse.jgit</artifactId>
 			<version>3.2.0.201312181205-r</version>
 		</dependency>
 		<dependency>
@@ -87,6 +87,17 @@
 						<phase>process-classes</phase>
 						<goals>
 							<goal>generate-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -239,11 +250,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
 					<version>2.5.2</version>
 					<configuration>
@@ -256,6 +262,11 @@
 							<version>${coding-standards.version}</version>
 						</dependency>
 					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.6.4.201312101107</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -330,14 +341,14 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<configuration>
 					<excludeFilterFile>config/findbugs-exclude-filter.xml</excludeFilterFile>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>

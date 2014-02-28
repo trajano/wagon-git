@@ -12,14 +12,14 @@ approach is used to prevent polluting the maven namespace.
 
     <plugin>
         <artifactId>maven-site-plugin</artifactId>
-	<version>3.3</version>
-	<dependencies>
-	    <dependency>
-	        <groupId>net.trajano.wagon</groupId>
-	        <artifactId>wagon-git</artifactId>
-	        <version>1.0.0-SNAPSHOT</version>
-	    </dependency>
-	<dependencies>
+        <version>3.3</version>
+	    <dependencies>
+	        <dependency>
+                <groupId>net.trajano.wagon</groupId>
+                <artifactId>wagon-git</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+	    <dependencies>
     </plugin>
 
 Usage
@@ -31,8 +31,8 @@ follows:
     <distributionManagement>
         <site>
             <id>gh-pages</id>
-	    <name>Trajano Maven Site Deployment</name>
-	    <url>git:ssh://git@github.com/trajano/trajano.git?gh-pages#</url>
+            <name>Trajano Maven Site Deployment</name>
+            <url>git:ssh://git@github.com/trajano/trajano.git?gh-pages#</url>
         </site>
     </distributionManagement>
 

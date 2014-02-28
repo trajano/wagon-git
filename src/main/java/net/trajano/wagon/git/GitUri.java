@@ -4,8 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Git URI. Provides component extraction. The URI string is in the form
- * git:[git specific uri]?branchname#ignored
+ * Git URI. This provides the logic to extract the components from a URI. The
+ * URI string is in the form
+ * <code>git:[git specific uri]?branchname#ignored</code>.
  */
 public class GitUri {
     /**
@@ -34,10 +35,21 @@ public class GitUri {
                 gitUri.toASCIIString().indexOf("?"));
     }
 
+    /**
+     * Branch name.
+     * 
+     * @return branch name
+     */
     public String getBranchName() {
         return branchName;
     }
 
+    /**
+     * Git repository URI. This returns a string as that is what is being used
+     * by the JGit API.
+     * 
+     * @return Git repository URI
+     */
     public String getGitRepositoryUri() {
         return gitRepositoryUri;
     }

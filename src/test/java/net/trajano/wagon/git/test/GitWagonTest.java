@@ -28,14 +28,6 @@ public class GitWagonTest extends StreamingWagonTestCase {
     protected void setupWagonTestingFixtures() throws Exception {
         Git git = Git.init().setDirectory(gitRemoteDirectory).call();
         File.createTempFile("temp", null, gitRemoteDirectory);
-
-        RefUpdate refUpdate = git.getRepository().getRefDatabase()
-                .newUpdate(Constants.HEAD, true);
-        refUpdate.setForceUpdate(true);
-        refUpdate.link("refs/heads/gh-pages");
-
-        git.add().addFilepattern(".");
-        git.commit().setMessage("initial").call();
     }
 
     @Override

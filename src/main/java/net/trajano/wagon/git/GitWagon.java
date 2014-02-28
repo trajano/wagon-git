@@ -21,6 +21,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.RefUpdate;
 
 /**
  * Git Wagon.
@@ -130,9 +132,10 @@ public class GitWagon extends StreamWagon {
                     .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
                     .call();
             if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
-                throw new ConnectionException("the branch "
-                        + gitUri.getBranchName() + " does not exist in "
-                        + gitUri.getGitRepositoryUri());
+                final RefUpdate refUpdate = git.getRepository()
+                        .getRefDatabase().newUpdate(Constants.HEAD, true);
+                refUpdate.setForceUpdate(true);
+                refUpdate.link("refs/heads/" + gitUri.getBranchName());
             }
         } catch (final GitAPIException e) {
             throw new ConnectionException(e.getMessage(), e);

@@ -46,7 +46,6 @@ public class GitWagon extends StreamWagon {
     @Override
     public void closeConnection() throws ConnectionException {
         try {
-            System.out.println("COMMIT");
             git.add().addFilepattern(".").call();
             git.commit().setMessage("wagon-git commit").call();
             git.push().setRemote(gitUri.getGitRepositoryUri()).call();
@@ -107,7 +106,7 @@ public class GitWagon extends StreamWagon {
         for (final File file : files) {
             String name = file.getName();
             if (file.isDirectory() && !name.endsWith("/")) {
-                name += "/";
+                name += "/"; // NOPMD this is easier to read.
             }
             list.add(name);
         }
@@ -127,20 +126,14 @@ public class GitWagon extends StreamWagon {
             gitDir.delete();
             gitDir.mkdir();
 
-            // try to clone gh-pages first if fail just init,
             git = Git.cloneRepository().setURI(gitUri.getGitRepositoryUri())
                     .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
                     .call();
-            // git = Git.init().setDirectory(gitDir).call();
-            // git.push().setRemote(remote)
             if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
                 throw new ConnectionException("the branch "
                         + gitUri.getBranchName() + " does not exist in "
                         + gitUri.getGitRepositoryUri());
             }
-            System.out.println("B=" + git.getRepository().getBranch());
-            System.out.println(gitUri.getBranchName());
-            System.out.println(gitUri.getGitRepositoryUri());
         } catch (final GitAPIException e) {
             throw new ConnectionException(e.getMessage(), e);
         } catch (final URISyntaxException e) {
@@ -150,6 +143,9 @@ public class GitWagon extends StreamWagon {
         }
     }
 
+    /**
+     * Git URI.
+     */
     private GitUri gitUri;
 
     @Override
@@ -157,12 +153,8 @@ public class GitWagon extends StreamWagon {
             final String destinationDirectory) throws TransferFailedException,
             ResourceDoesNotExistException, AuthorizationException {
         try {
-            System.out.println("basedir = " + repository.getBasedir());
-            File destinationDirectory2 = new File(gitDir, destinationDirectory);
-            System.out.println("copying " + sourceDirectory + " to "
-                    + destinationDirectory2);
-            FileUtils.copyDirectoryStructure(sourceDirectory,
-                    destinationDirectory2);
+            FileUtils.copyDirectoryStructure(sourceDirectory, new File(gitDir,
+                    destinationDirectory));
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         }

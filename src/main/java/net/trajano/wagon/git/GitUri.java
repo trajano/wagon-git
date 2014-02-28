@@ -8,12 +8,24 @@ import java.net.URISyntaxException;
  * git:[git specific uri]?branchname#ignored
  */
 public class GitUri {
+    /**
+     * Branch name.
+     */
     private final String branchName;
 
-    public String getBranchName() {
-        return branchName;
-    }
+    /**
+     * Repository URI.
+     */
+    private final String gitRepositoryUri;
 
+    /**
+     * Constructs the object from a URI string.
+     * 
+     * @param uriString
+     *            URI string.
+     * @throws URISyntaxException
+     *             parsing exception
+     */
     public GitUri(final String uriString) throws URISyntaxException {
         final URI uri = new URI(uriString);
         final URI gitUri = new URI(uri.getSchemeSpecificPart());
@@ -22,9 +34,11 @@ public class GitUri {
                 gitUri.toASCIIString().indexOf("?"));
     }
 
+    public String getBranchName() {
+        return branchName;
+    }
+
     public String getGitRepositoryUri() {
         return gitRepositoryUri;
     }
-
-    private final String gitRepositoryUri;
 }

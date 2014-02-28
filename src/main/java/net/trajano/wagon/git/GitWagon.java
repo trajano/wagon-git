@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,15 +46,18 @@ public class GitWagon extends StreamWagon {
     @Override
     public void closeConnection() throws ConnectionException {
         try {
+            System.out.println("COMMIT");
             git.add().addFilepattern(".").call();
             git.commit().setMessage("wagon-git commit").call();
+            git.push().setRemote(gitUri.getGitRepositoryUri()).call();
         } catch (final GitAPIException e) {
             throw new ConnectionException(e.getMessage(), e);
         }
     }
 
     /**
-     * This will read from the working copy. {@inheritDoc}
+     * This will read from the working copy. File modification date would not be
+     * available as it does not really have any meaningful value.{@inheritDoc}
      */
     @Override
     public void fillInputData(final InputData inputData)
@@ -69,7 +72,6 @@ public class GitWagon extends StreamWagon {
             }
             inputData.setInputStream(new FileInputStream(file));
             inputData.getResource().setContentLength(file.length());
-            inputData.getResource().setLastModified(file.lastModified());
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         }
@@ -120,16 +122,35 @@ public class GitWagon extends StreamWagon {
     protected void openConnectionInternal() throws ConnectionException,
             AuthenticationException {
         try {
-            // Repository repo = new FileRepository(gitDir);
-            gitDir = new File("target/git");
-            git = Git.init().setDirectory(gitDir).call();
-            System.out.println("openConnectionInternal");
-            System.out.println(URI.create(getRepository().getUrl())
-                    .getSchemeSpecificPart());
-        } catch (final Exception e) {
-            throw new ConnectionException(e.getMessage());
+            gitUri = new GitUri(getRepository().getUrl());
+            gitDir = File.createTempFile("wagon-git", null);
+            gitDir.delete();
+            gitDir.mkdir();
+
+            // try to clone gh-pages first if fail just init,
+            git = Git.cloneRepository().setURI(gitUri.getGitRepositoryUri())
+                    .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
+                    .call();
+            // git = Git.init().setDirectory(gitDir).call();
+            // git.push().setRemote(remote)
+            if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
+                throw new ConnectionException("the branch "
+                        + gitUri.getBranchName() + " does not exist in "
+                        + gitUri.getGitRepositoryUri());
+            }
+            System.out.println("B=" + git.getRepository().getBranch());
+            System.out.println(gitUri.getBranchName());
+            System.out.println(gitUri.getGitRepositoryUri());
+        } catch (final GitAPIException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ConnectionException(e.getMessage(), e);
         }
     }
+
+    private GitUri gitUri;
 
     @Override
     public void putDirectory(final File sourceDirectory,
@@ -140,7 +161,8 @@ public class GitWagon extends StreamWagon {
             File destinationDirectory2 = new File(gitDir, destinationDirectory);
             System.out.println("copying " + sourceDirectory + " to "
                     + destinationDirectory2);
-            FileUtils.copyDirectoryStructure(sourceDirectory, destinationDirectory2);
+            FileUtils.copyDirectoryStructure(sourceDirectory,
+                    destinationDirectory2);
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         }

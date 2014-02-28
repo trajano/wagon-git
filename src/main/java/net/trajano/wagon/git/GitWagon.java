@@ -23,12 +23,18 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 /**
  * Git Wagon.
  */
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends StreamWagon {
+
+    /**
+     * Credentials provider.
+     */
+    private UsernamePasswordCredentialsProvider credentialsProvider;
 
     /**
      * Git.
@@ -41,6 +47,11 @@ public class GitWagon extends StreamWagon {
     private File gitDir;
 
     /**
+     * Git URI.
+     */
+    private GitUri gitUri;
+
+    /**
      * This will commit the local changes and push them to the repository. If
      * the method is unable to push to the repository without force, it will
      * throw an exception. {@inheritDoc}
@@ -50,7 +61,8 @@ public class GitWagon extends StreamWagon {
         try {
             git.add().addFilepattern(".").call();
             git.commit().setMessage("wagon-git commit").call();
-            git.push().setRemote(gitUri.getGitRepositoryUri()).call();
+            git.push().setRemote(gitUri.getGitRepositoryUri())
+                    .setCredentialsProvider(credentialsProvider).call();
         } catch (final GitAPIException e) {
             throw new ConnectionException(e.getMessage(), e);
         }
@@ -128,7 +140,12 @@ public class GitWagon extends StreamWagon {
             gitDir.delete();
             gitDir.mkdir();
 
+            credentialsProvider = new UsernamePasswordCredentialsProvider(
+                    getAuthenticationInfo().getUserName(),
+                    getAuthenticationInfo().getPassword() == null ? ""
+                            : getAuthenticationInfo().getPassword());
             git = Git.cloneRepository().setURI(gitUri.getGitRepositoryUri())
+                    .setCredentialsProvider(credentialsProvider)
                     .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
                     .call();
             if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
@@ -145,11 +162,6 @@ public class GitWagon extends StreamWagon {
             throw new ConnectionException(e.getMessage(), e);
         }
     }
-
-    /**
-     * Git URI.
-     */
-    private GitUri gitUri;
 
     @Override
     public void putDirectory(final File sourceDirectory,

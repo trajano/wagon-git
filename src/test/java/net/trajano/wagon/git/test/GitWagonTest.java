@@ -1,8 +1,11 @@
 package net.trajano.wagon.git.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.wagon.StreamingWagonTestCase;
+import org.apache.maven.wagon.repository.Repository;
+import org.apache.maven.wagon.resource.Resource;
 
 public class GitWagonTest extends StreamingWagonTestCase {
 
@@ -13,7 +16,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
 
     @Override
     protected String getProtocol() {
-        return null;
+        return "git";
     }
 
     @Override
@@ -21,4 +24,10 @@ public class GitWagonTest extends StreamingWagonTestCase {
         return 0;
     }
 
+    @Override
+    protected long getExpectedLastModifiedOnGet(Repository repository,
+            Resource resource) {
+        return new File(new File("target/git"), resource.getName())
+                .lastModified();
+    }
 }

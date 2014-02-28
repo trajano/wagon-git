@@ -1,8 +1,12 @@
 package net.trajano.wagon.git;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.InputData;
@@ -14,6 +18,9 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 /**
  * Git Wagon.
@@ -21,9 +28,15 @@ import org.codehaus.plexus.component.annotations.Component;
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends StreamWagon {
 
-    private String scmVersion;
+    /**
+     * Git.
+     */
+    private Git git;
 
-    private String scmVersionType;
+    /**
+     * Local copy location.
+     */
+    private File gitDir;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -32,7 +45,12 @@ public class GitWagon extends StreamWagon {
      */
     @Override
     public void closeConnection() throws ConnectionException {
-        System.out.println("closeConnection");
+        try {
+            git.add().addFilepattern(".").call();
+            git.commit().setMessage("wagon-git commit").call();
+        } catch (final GitAPIException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -42,8 +60,19 @@ public class GitWagon extends StreamWagon {
     public void fillInputData(final InputData inputData)
             throws TransferFailedException, ResourceDoesNotExistException,
             AuthorizationException {
-        System.out.println("fillInputData" + inputData + " "
-                + inputData.getResource().getName());
+        try {
+            final File file = new File(gitDir, inputData.getResource()
+                    .getName());
+            if (!file.exists()) {
+                throw new ResourceDoesNotExistException("The resource " + file
+                        + " does not exist.");
+            }
+            inputData.setInputStream(new FileInputStream(file));
+            inputData.getResource().setContentLength(file.length());
+            inputData.getResource().setLastModified(file.lastModified());
+        } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -52,17 +81,35 @@ public class GitWagon extends StreamWagon {
     @Override
     public void fillOutputData(final OutputData outputData)
             throws TransferFailedException {
-        System.out.println("fillOutputData:" + outputData + " "
-                + outputData.getResource().getName());
-        outputData.setOutputStream(new ByteArrayOutputStream());
+        try {
+            final File file = new File(gitDir, outputData.getResource()
+                    .getName());
+            file.getParentFile().mkdirs();
+            outputData.setOutputStream(new FileOutputStream(file));
+        } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        }
     }
 
-    public String getScmVersion() {
-        return scmVersion;
-    }
-
-    public String getScmVersionType() {
-        return scmVersionType;
+    @Override
+    public List<String> getFileList(final String destinationDirectory)
+            throws TransferFailedException, ResourceDoesNotExistException,
+            AuthorizationException {
+        final File dir = new File(gitDir, destinationDirectory);
+        final File[] files = dir.listFiles();
+        if (files == null) {
+            throw new ResourceDoesNotExistException("The directory "
+                    + destinationDirectory + " does not exist");
+        }
+        final List<String> list = new LinkedList<String>();
+        for (final File file : files) {
+            String name = file.getName();
+            if (file.isDirectory() && !name.endsWith("/")) {
+                name += "/";
+            }
+            list.add(name);
+        }
+        return list;
     }
 
     /**
@@ -72,27 +119,43 @@ public class GitWagon extends StreamWagon {
     @Override
     protected void openConnectionInternal() throws ConnectionException,
             AuthenticationException {
-        System.out.println("openConnectionInternal");
-        System.out.println(URI.create(getRepository().getUrl())
-                .getSchemeSpecificPart());
+        try {
+            // Repository repo = new FileRepository(gitDir);
+            gitDir = new File("target/git");
+            git = Git.init().setDirectory(gitDir).call();
+            System.out.println("openConnectionInternal");
+            System.out.println(URI.create(getRepository().getUrl())
+                    .getSchemeSpecificPart());
+        } catch (final Exception e) {
+            throw new ConnectionException(e.getMessage());
+        }
     }
 
     @Override
     public void putDirectory(final File sourceDirectory,
             final String destinationDirectory) throws TransferFailedException,
             ResourceDoesNotExistException, AuthorizationException {
-        System.out.println("putDirectory " + sourceDirectory + " to "
-                + destinationDirectory);
+        try {
+            System.out.println("basedir = " + repository.getBasedir());
+            File destinationDirectory2 = new File(gitDir, destinationDirectory);
+            System.out.println("copying " + sourceDirectory + " to "
+                    + destinationDirectory2);
+            FileUtils.copyDirectoryStructure(sourceDirectory, destinationDirectory2);
+        } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        }
     }
 
-    public void setScmVersion(final String scmVersion) {
-        System.out.println("SCMVersion=" + scmVersion);
-        this.scmVersion = scmVersion;
-    }
+    @Override
+    public boolean resourceExists(final String resourceName)
+            throws TransferFailedException, AuthorizationException {
+        final File file = new File(gitDir, resourceName);
 
-    public void setScmVersionType(final String scmVersionType) {
-        System.out.println("SCMVersionType=" + scmVersionType);
-        this.scmVersionType = scmVersionType;
+        if (resourceName.endsWith("/")) {
+            return file.isDirectory();
+        }
+
+        return file.exists();
     }
 
     @Override

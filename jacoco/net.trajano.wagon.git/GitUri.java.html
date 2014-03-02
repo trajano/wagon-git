@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GitUri.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Git Wagon Provider</a> &gt; <a href="index.source.html" class="el_package">net.trajano.wagon.git</a> &gt; <span class="el_source">GitUri.java</span></div><h1>GitUri.java</h1><pre class="source lang-java linenums">package net.trajano.wagon.git;
+
+import static java.lang.String.format;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+
+/**
+ * Git URI. This provides the logic to extract the components from a URI. The
+ * URI string is in the form
+ * &lt;code&gt;git:gitSpecificUri?branchName#relativeDirectory&lt;/code&gt;.
+ */
+public class GitUri {
+    /**
+     * Branch name.
+     */
+    private final String branchName;
+
+    /**
+     * Repository URI.
+     */
+    private final String gitRepositoryUri;
+
+    /**
+     * Resource. This is the fragment part of the URI.
+     */
+    private final String resource;
+
+    /**
+     * Constructs the object from a URI string that contains &quot;git:&quot; schema.
+     * 
+     * @param uriString
+     *            URI string.
+     * @throws URISyntaxException
+     *             parsing exception
+     */
+<span class="fc" id="L39">    public GitUri(final String uriString) throws URISyntaxException {</span>
+<span class="fc" id="L40">        final URI uri = new URI(uriString);</span>
+<span class="fc" id="L41">        final URI gitUri = new URI(uri.getSchemeSpecificPart());</span>
+<span class="fc" id="L42">        branchName = gitUri.getQuery();</span>
+<span class="fc" id="L43">        final String asciiUriString = gitUri.toASCIIString();</span>
+<span class="fc" id="L44">        gitRepositoryUri = asciiUriString.substring(0,</span>
+                asciiUriString.indexOf('?'));
+<span class="fc" id="L46">        resource = uri.getFragment();</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * 
+     * @param gitUri
+     *            valid git URI (i.e. no git: schema).
+     */
+<span class="fc" id="L54">    private GitUri(final URI gitUri) {</span>
+<span class="fc" id="L55">        branchName = gitUri.getQuery();</span>
+<span class="fc" id="L56">        final String asciiUriString = gitUri.toASCIIString();</span>
+<span class="fc" id="L57">        gitRepositoryUri = asciiUriString.substring(0,</span>
+                asciiUriString.lastIndexOf('?'));
+<span class="fc" id="L59">        resource = gitUri.getFragment();</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Branch name.
+     * 
+     * @return branch name
+     */
+    public String getBranchName() {
+<span class="fc" id="L68">        return branchName;</span>
+    }
+
+    /**
+     * Git repository URI. This returns a string as that is what is being used
+     * by the JGit API.
+     * 
+     * @return Git repository URI
+     */
+    public String getGitRepositoryUri() {
+<span class="fc" id="L78">        return gitRepositoryUri;</span>
+    }
+
+    public String getResource() {
+<span class="fc" id="L82">        return resource;</span>
+    }
+
+    /**
+     * Resolves a new {@link GitUri} with the fragment. The schema portion will
+     * find the last occurrence of a URI path segment with a &quot;?&quot; character as
+     * the Git URI with the branch name.
+     * 
+     * @param fragment
+     *            may contain escaped characters.
+     * @return resolved {@link GitUri}
+     */
+    public GitUri resolve(final String fragment) {
+        final String decodedFragment;
+        try {
+<span class="fc" id="L97">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L98">        } catch (final UnsupportedEncodingException e) {</span>
+            // should not happen.
+<span class="nc" id="L100">            throw new IllegalStateException(e);</span>
+<span class="fc" id="L101">        }</span>
+        final URI combined;
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (resource != null) {</span>
+<span class="fc" id="L104">            combined = URI.create(gitRepositoryUri + resource);</span>
+        } else {
+<span class="fc" id="L106">            combined = URI.create(gitRepositoryUri);</span>
+        }
+<span class="fc" id="L108">        final String slashAppendedUri = combined.toASCIIString();</span>
+<span class="fc" id="L109">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
+                decodedFragment.replace(&quot; &quot;, &quot;%2520&quot;));
+<span class="fc" id="L111">        final StringBuilder resolved = new StringBuilder(</span>
+                resolvedUri.toASCIIString());
+
+<span class="fc" id="L114">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
+<span class="fc" id="L116">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
+                    branchName, decodedFragment.replace(&quot; &quot;, &quot;%20&quot;))));
+        }
+<span class="fc" id="L119">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
+
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        if (lastRelevantSlash &gt; 0) {</span>
+<span class="nc" id="L122">            resolved.insert(lastRelevantSlash, '#');</span>
+        }
+
+<span class="fc" id="L125">        return new GitUri(URI.create(resolved.toString()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.4.201312101107</span></div></body></html>

@@ -184,8 +184,13 @@ public class GitWagon extends StreamWagon {
 
     /**
      * {@inheritDoc}
+     * <p>
+     * Warnings are suppressed for false positive with Sonar and multiple
+     * exceptions on public API. {@inheritDoc}
+     * </p>
      */
     @Override
+    @SuppressWarnings("all")
     public List<String> getFileList(final String directory)
             throws TransferFailedException, ResourceDoesNotExistException,
             AuthorizationException {
@@ -271,9 +276,11 @@ public class GitWagon extends StreamWagon {
     /**
      * If the destination directory is not inside the source directory (denoted
      * by starting with "../"), then another git repository is registered.
-     * {@inheritDoc}
+     * Warnings are suppressed for false positive with Sonar and multiple
+     * exceptions on public API. {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("all")
     public void putDirectory(final File sourceDirectory,
             final String destinationDirectory) throws TransferFailedException,
             ResourceDoesNotExistException, AuthorizationException {
@@ -298,16 +305,16 @@ public class GitWagon extends StreamWagon {
      */
     @Override
     public boolean resourceExists(final String resourceName)
-            throws TransferFailedException, AuthorizationException {
+            throws TransferFailedException {
         final File file;
         try {
             file = getFileForResource(resourceName);
         } catch (final GitAPIException e) {
-            throw new AuthorizationException(e.getMessage(), e);
+            throw new TransferFailedException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         } catch (final URISyntaxException e) {
-            throw new AuthorizationException(e.getMessage(), e);
+            throw new TransferFailedException(e.getMessage(), e);
         }
 
         if (resourceName.endsWith("/")) { //$NON-NLS-1$

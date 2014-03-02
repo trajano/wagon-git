@@ -37,7 +37,7 @@ public class GitUri {
      *             parsing exception
      */
     public GitUri(final String uriString) throws URISyntaxException {
-        final URI uri = new URI(uriString);
+        final URI uri = new URI(uriString.replace("##", "#"));
         final URI gitUri = new URI(uri.getSchemeSpecificPart());
         branchName = gitUri.getQuery();
         final String asciiUriString = gitUri.toASCIIString();
@@ -92,6 +92,7 @@ public class GitUri {
      * @return resolved {@link GitUri}
      */
     public GitUri resolve(final String fragment) {
+        // TODO clean this up so it is less "hacky"
         final String decodedFragment;
         try {
             decodedFragment = URLDecoder.decode(fragment, "UTF-8");
@@ -101,7 +102,8 @@ public class GitUri {
         }
         final URI combined;
         if (resource != null) {
-            combined = URI.create(gitRepositoryUri + resource);
+            combined = URI.create(gitRepositoryUri
+                    + resource.replace("##", "#"));
         } else {
             combined = URI.create(gitRepositoryUri);
         }
@@ -117,8 +119,9 @@ public class GitUri {
                     branchName, decodedFragment.replace(" ", "%20"))));
         }
         final int lastRelevantSlash = resolved.indexOf("/", lastQuestionMark);
+        final int lastRelevantHash = resolved.indexOf("#", lastQuestionMark);
 
-        if (lastRelevantSlash > 0) {
+        if (lastRelevantSlash > 0 && lastRelevantHash >= lastRelevantSlash) {
             resolved.insert(lastRelevantSlash, '#');
         }
 

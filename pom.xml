@@ -20,6 +20,13 @@
 		<developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
+	<distributionManagement>
+		<site>
+			<id>gh-pages</id>
+			<name>Trajano GitHub Pages</name>
+			<url>git:ssh://git@github.com/trajano/${project.artifactId}.git?gh-pages#</url>
+		</site>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
@@ -232,6 +239,11 @@
 							<groupId>net.trajano</groupId>
 							<artifactId>coding-standards</artifactId>
 							<version>${coding-standards.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>net.trajano.wagon</groupId>
+							<artifactId>wagon-git</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
 						</dependency>
 					</dependencies>
 				</plugin>

@@ -31,7 +31,7 @@ follows:
     <distributionManagement>
         <site>
             <id>gh-pages</id>
-            <name>Trajano Maven Site Deployment</name>
+            <name>Trajano GitHub Pages</name>
             <url>git:ssh://git@github.com/trajano/trajano.git?gh-pages#</url>
         </site>
     </distributionManagement>

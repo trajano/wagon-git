@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.trajano</groupId>
@@ -10,7 +9,7 @@
 	<groupId>net.trajano.wagon</groupId>
 	<artifactId>wagon-git</artifactId>
 	<name>Git Wagon Provider</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<description>Git Wagon Provider</description>
 	<properties>
 		<coding-standards.version>1.1.0</coding-standards.version>
@@ -18,7 +17,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/trajano/${project.artifactId}</connection>
 		<developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>wagon-git-1.0.0</tag>
 	</scm>
 	<distributionManagement>
 		<site>
@@ -46,7 +45,7 @@
 		<dependency>
 			<groupId>net.trajano.commons</groupId>
 			<artifactId>commons-testing</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<version>1.0.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -243,7 +242,7 @@
 						<dependency>
 							<groupId>net.trajano.wagon</groupId>
 							<artifactId>wagon-git</artifactId>
-							<version>1.0.0-SNAPSHOT</version>
+							<version>1.0.0</version>
 						</dependency>
 					</dependencies>
 				</plugin>

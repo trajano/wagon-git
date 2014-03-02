@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.InputData;
@@ -29,16 +33,33 @@ import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 /**
- * Git Wagon.
+ * Git Wagon. Due to issues with the way maven-site-plugin is improperly sending
+ * requests that assume the target repository is a file system, the handling of
+ * git URIs fails. This performs an inefficient, but working method of creating
+ * a clone per request, but only once per Git repository.
  */
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends StreamWagon {
 
     /**
+     * Logger.
+     */
+    private static final Logger LOG;
+
+    /**
+     * Messages resource path.
+     */
+    private static final String MESSAGES = "META-INF/Messages";
+
+    /**
      * Resource bundle.
      */
-    private static final ResourceBundle R = ResourceBundle
-            .getBundle("META-INF/Messages"); //$NON-NLS-1$
+    private static final ResourceBundle R;
+
+    static {
+        LOG = Logger.getLogger("net.trajano.wagon.git", MESSAGES);
+        R = ResourceBundle.getBundle(MESSAGES);
+    }
 
     /**
      * Credentials provider.
@@ -46,14 +67,9 @@ public class GitWagon extends StreamWagon {
     private UsernamePasswordCredentialsProvider credentialsProvider;
 
     /**
-     * Git.
+     * Git cache.
      */
-    private Git git;
-
-    /**
-     * Local copy location.
-     */
-    private File gitDir;
+    private final Map<String, Git> gitCache = new ConcurrentHashMap<String, Git>();
 
     /**
      * Git URI.
@@ -68,11 +84,18 @@ public class GitWagon extends StreamWagon {
     @Override
     public void closeConnection() throws ConnectionException {
         try {
-            git.add().addFilepattern(".").call(); //$NON-NLS-1$
-            git.commit().setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
-            git.push().setRemote(gitUri.getGitRepositoryUri())
-                    .setCredentialsProvider(credentialsProvider).call();
+            for (final String gitRemoteUri : gitCache.keySet()) {
+                final Git git = gitCache.get(gitRemoteUri);
+                git.add().addFilepattern(".").call(); //$NON-NLS-1$
+                git.commit().setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
+                git.push().setRemote(gitRemoteUri)
+                        .setCredentialsProvider(credentialsProvider).call();
+                git.close();
+                FileUtils.deleteDirectory(git.getRepository().getDirectory());
+            }
         } catch (final GitAPIException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        } catch (final IOException e) {
             throw new ConnectionException(e.getMessage(), e);
         }
     }
@@ -91,7 +114,7 @@ public class GitWagon extends StreamWagon {
             throws TransferFailedException, ResourceDoesNotExistException,
             AuthorizationException {
         try {
-            final File file = new File(gitDir, inputData.getResource()
+            final File file = getFileForResource(inputData.getResource()
                     .getName());
             if (!file.exists()) {
                 throw new ResourceDoesNotExistException(format(
@@ -105,6 +128,10 @@ public class GitWagon extends StreamWagon {
             inputData.getResource().setContentLength(file.length());
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
+        } catch (final GitAPIException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
+            throw new TransferFailedException(e.getMessage(), e);
         }
     }
 
@@ -115,7 +142,7 @@ public class GitWagon extends StreamWagon {
     public void fillOutputData(final OutputData outputData)
             throws TransferFailedException {
         try {
-            final File file = new File(gitDir, outputData.getResource()
+            final File file = getFileForResource(outputData.getResource()
                     .getName());
             if (!file.getParentFile().mkdirs()
                     && !file.getParentFile().exists()) {
@@ -126,17 +153,52 @@ public class GitWagon extends StreamWagon {
             outputData.setOutputStream(new FileOutputStream(file));
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
+        } catch (final GitAPIException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
+            throw new TransferFailedException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * This will get the file object for the given resource relative to the
+     * {@link Git} specified for the connection. It will handle resources where
+     * it jumps up past the parent folder.
+     * 
+     * @param resourceName
+     *            resource name.
+     * @return file used for the resourse.
+     * @throws IOException
+     * @throws GitAPIException
+     * @throws URISyntaxException
+     */
+    private File getFileForResource(final String resourceName)
+            throws GitAPIException, IOException, URISyntaxException {
+        // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
+        // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
+        final GitUri resolved = gitUri.resolve(resourceName);
+        final Git resourceGit = getGit(resolved.getGitRepositoryUri());
+        return new File(resourceGit.getRepository().getWorkTree(),
+                resolved.getResource());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> getFileList(final String destinationDirectory)
+    public List<String> getFileList(final String directory)
             throws TransferFailedException, ResourceDoesNotExistException,
             AuthorizationException {
-        final File dir = new File(gitDir, destinationDirectory);
+        final File dir;
+        try {
+            dir = getFileForResource(directory);
+        } catch (final GitAPIException e) {
+            throw new AuthorizationException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
+            throw new ResourceDoesNotExistException(e.getMessage(), e);
+        }
         final File[] files = dir.listFiles();
         if (files == null) {
             throw new ResourceDoesNotExistException(format(
@@ -155,41 +217,60 @@ public class GitWagon extends StreamWagon {
 
     /**
      * This will create or refresh the working copy. If the working copy cannot
-     * be pulled cleanly this method will fail. {@inheritDoc}
+     * be pulled cleanly this method will fail.
+     * 
+     * @param gitRepositoryUri
+     *            remote git repository URI string
+     * @return git
+     * @throws GitAPIException
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    private Git getGit(final String gitRepositoryUri) throws GitAPIException,
+            IOException, URISyntaxException {
+        final Git cachedGit = gitCache.get(gitRepositoryUri);
+        if (cachedGit != null) {
+            return cachedGit;
+        }
+        final File gitDir = File.createTempFile(
+                gitRepositoryUri.replaceAll("[^A-Za-z]", "_"), "wagon-git"); //$NON-NLS-1$
+        gitDir.delete();
+        gitDir.mkdir();
+
+        credentialsProvider = new UsernamePasswordCredentialsProvider(
+                getAuthenticationInfo().getUserName(), getAuthenticationInfo()
+                        .getPassword() == null ? "" //$NON-NLS-1$
+                        : getAuthenticationInfo().getPassword());
+        final Git git = Git.cloneRepository().setURI(gitRepositoryUri)
+                .setCredentialsProvider(credentialsProvider)
+                .setBranch(gitUri.getBranchName()).setDirectory(gitDir).call();
+        if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
+            LOG.log(Level.INFO, "missingbranch", gitUri.getBranchName());
+            final RefUpdate refUpdate = git.getRepository().getRefDatabase()
+                    .newUpdate(Constants.HEAD, true);
+            refUpdate.setForceUpdate(true);
+            refUpdate.link("refs/heads/" + gitUri.getBranchName()); //$NON-NLS-1$
+        }
+        gitCache.put(gitRepositoryUri, git);
+        return git;
+    }
+
+    /**
+     * Sets the initial git URI.
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
             AuthenticationException {
         try {
             gitUri = new GitUri(getRepository().getUrl());
-            gitDir = File.createTempFile("wagon-git", null); //$NON-NLS-1$
-            gitDir.delete();
-            gitDir.mkdir();
-
-            credentialsProvider = new UsernamePasswordCredentialsProvider(
-                    getAuthenticationInfo().getUserName(),
-                    getAuthenticationInfo().getPassword() == null ? "" //$NON-NLS-1$
-                            : getAuthenticationInfo().getPassword());
-            git = Git.cloneRepository().setURI(gitUri.getGitRepositoryUri())
-                    .setCredentialsProvider(credentialsProvider)
-                    .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
-                    .call();
-            if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
-                final RefUpdate refUpdate = git.getRepository()
-                        .getRefDatabase().newUpdate(Constants.HEAD, true);
-                refUpdate.setForceUpdate(true);
-                refUpdate.link("refs/heads/" + gitUri.getBranchName()); //$NON-NLS-1$
-            }
-        } catch (final GitAPIException e) {
-            throw new ConnectionException(e.getMessage(), e);
         } catch (final URISyntaxException e) {
-            throw new ConnectionException(e.getMessage(), e);
-        } catch (final IOException e) {
             throw new ConnectionException(e.getMessage(), e);
         }
     }
 
     /**
+     * If the destination directory is not inside the source directory (denoted
+     * by starting with "../"), then another git repository is registered.
      * {@inheritDoc}
      */
     @Override
@@ -201,19 +282,33 @@ public class GitWagon extends StreamWagon {
                 throw new ResourceDoesNotExistException(format(
                         R.getString("dirnotfound"), sourceDirectory)); //$NON-NLS-1$
             }
-            FileUtils.copyDirectoryStructure(sourceDirectory, new File(gitDir,
-                    destinationDirectory));
+            final File fileForResource = getFileForResource(destinationDirectory);
+            FileUtils.copyDirectoryStructure(sourceDirectory, fileForResource);
         } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final GitAPIException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
             throw new TransferFailedException(e.getMessage(), e);
         }
     }
 
     /**
-     * {@inheritDoc} Does not throw anything.
+     * {@inheritDoc}
      */
     @Override
-    public boolean resourceExists(final String resourceName) {
-        final File file = new File(gitDir, resourceName);
+    public boolean resourceExists(final String resourceName)
+            throws TransferFailedException, AuthorizationException {
+        final File file;
+        try {
+            file = getFileForResource(resourceName);
+        } catch (final GitAPIException e) {
+            throw new AuthorizationException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new TransferFailedException(e.getMessage(), e);
+        } catch (final URISyntaxException e) {
+            throw new AuthorizationException(e.getMessage(), e);
+        }
 
         if (resourceName.endsWith("/")) { //$NON-NLS-1$
             return file.isDirectory();

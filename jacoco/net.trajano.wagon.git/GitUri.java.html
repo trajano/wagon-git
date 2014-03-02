@@ -37,7 +37,7 @@ public class GitUri {
      *             parsing exception
      */
 <span class="fc" id="L39">    public GitUri(final String uriString) throws URISyntaxException {</span>
-<span class="fc" id="L40">        final URI uri = new URI(uriString);</span>
+<span class="fc" id="L40">        final URI uri = new URI(uriString.replace(&quot;##&quot;, &quot;#&quot;));</span>
 <span class="fc" id="L41">        final URI gitUri = new URI(uri.getSchemeSpecificPart());</span>
 <span class="fc" id="L42">        branchName = gitUri.getQuery();</span>
 <span class="fc" id="L43">        final String asciiUriString = gitUri.toASCIIString();</span>
@@ -92,37 +92,40 @@ public class GitUri {
      * @return resolved {@link GitUri}
      */
     public GitUri resolve(final String fragment) {
+        // TODO clean this up so it is less &quot;hacky&quot;
         final String decodedFragment;
         try {
-<span class="fc" id="L97">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
-<span class="nc" id="L98">        } catch (final UnsupportedEncodingException e) {</span>
+<span class="fc" id="L98">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L99">        } catch (final UnsupportedEncodingException e) {</span>
             // should not happen.
-<span class="nc" id="L100">            throw new IllegalStateException(e);</span>
-<span class="fc" id="L101">        }</span>
+<span class="nc" id="L101">            throw new IllegalStateException(e);</span>
+<span class="fc" id="L102">        }</span>
         final URI combined;
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (resource != null) {</span>
-<span class="fc" id="L104">            combined = URI.create(gitRepositoryUri + resource);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (resource != null) {</span>
+<span class="fc" id="L105">            combined = URI.create(gitRepositoryUri</span>
+                    + resource.replace(&quot;##&quot;, &quot;#&quot;));
         } else {
-<span class="fc" id="L106">            combined = URI.create(gitRepositoryUri);</span>
+<span class="fc" id="L108">            combined = URI.create(gitRepositoryUri);</span>
         }
-<span class="fc" id="L108">        final String slashAppendedUri = combined.toASCIIString();</span>
-<span class="fc" id="L109">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
+<span class="fc" id="L110">        final String slashAppendedUri = combined.toASCIIString();</span>
+<span class="fc" id="L111">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
                 decodedFragment.replace(&quot; &quot;, &quot;%2520&quot;));
-<span class="fc" id="L111">        final StringBuilder resolved = new StringBuilder(</span>
+<span class="fc" id="L113">        final StringBuilder resolved = new StringBuilder(</span>
                 resolvedUri.toASCIIString());
 
-<span class="fc" id="L114">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
-<span class="fc" id="L116">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
+<span class="fc" id="L116">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
+<span class="fc" id="L118">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
                     branchName, decodedFragment.replace(&quot; &quot;, &quot;%20&quot;))));
         }
-<span class="fc" id="L119">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
+<span class="fc" id="L121">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
+<span class="fc" id="L122">        final int lastRelevantHash = resolved.indexOf(&quot;#&quot;, lastQuestionMark);</span>
 
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        if (lastRelevantSlash &gt; 0) {</span>
-<span class="nc" id="L122">            resolved.insert(lastRelevantSlash, '#');</span>
+<span class="pc bpc" id="L124" title="3 of 4 branches missed.">        if (lastRelevantSlash &gt; 0 &amp;&amp; lastRelevantHash &gt;= lastRelevantSlash) {</span>
+<span class="nc" id="L125">            resolved.insert(lastRelevantSlash, '#');</span>
         }
 
-<span class="fc" id="L125">        return new GitUri(URI.create(resolved.toString()));</span>
+<span class="fc" id="L128">        return new GitUri(URI.create(resolved.toString()));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.4.201312101107</span></div></body></html>

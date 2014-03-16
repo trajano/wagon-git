@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.trajano</groupId>
         <artifactId>trajano</artifactId>
-        <version>6</version>
+        <version>7</version>
     </parent>
     <groupId>net.trajano.wagon</groupId>
     <artifactId>wagon-git</artifactId>
@@ -24,18 +24,8 @@
         </site>
     </distributionManagement>
     <properties>
-        <coding-standards.version>1.1.0</coding-standards.version>
+        <coding-standards.version>1.1.1</coding-standards.version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>net.trajano</groupId>
-                <artifactId>coding-standards</artifactId>
-                <version>1.1.0</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>

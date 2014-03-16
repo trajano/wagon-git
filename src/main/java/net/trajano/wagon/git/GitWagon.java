@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,7 +69,7 @@ public class GitWagon extends StreamWagon {
     /**
      * Git cache.
      */
-    private final Map<String, Git> gitCache = new ConcurrentHashMap<String, Git>();
+    private final ConcurrentMap<String, Git> gitCache = new ConcurrentHashMap<String, Git>();
 
     /**
      * Git URI.

@@ -19,7 +19,7 @@ approach is used to prevent polluting the maven namespace.
                 <artifactId>wagon-git</artifactId>
                 <version>${project.version}</version>
             </dependency>
-	    <dependencies>
+	    </dependencies>
     </plugin>
 
 Usage

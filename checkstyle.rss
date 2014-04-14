@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2012 - 2014 Trajano</copyright>
     <item>
-      <title>File: 4,
+      <title>File: 5,
              Errors: 0,
-             Warnings: 1,
+             Warnings: 3,
              Infos: 0
       </title>
             <link>http://site.trajano.net/wagon-git/wagon-git//checkstyle.html</link>
@@ -50,6 +50,20 @@
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.PassphraseCredentialsProvider.java">net/trajano/wagon/git/PassphraseCredentialsProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0

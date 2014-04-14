@@ -1,6 +1,6 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="52,112,156,139"/>
-<area shape="rect" id="node1" href="./GitWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="41,101,167,149"/>
-<area shape="rect" id="node2_1" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/wagon/StreamingWagonTestCase.html" title="org.apache.maven.wagon.StreamingWagonTestCase" alt="" coords="15,16,193,43"/>
+<area shape="rect" id="node1_0" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="53,112,155,139"/>
+<area shape="rect" id="node1" href="./GitWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="42,101,166,149"/>
+<area shape="rect" id="node2_1" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/wagon/StreamingWagonTestCase.html" title="org.apache.maven.wagon.StreamingWagonTestCase" alt="" coords="16,16,192,43"/>
 <area shape="rect" id="node2" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/wagon/StreamingWagonTestCase.html" title="&lt;TABLE&gt;" alt="" coords="5,5,203,53"/>
 </map>

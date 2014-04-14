@@ -30,6 +30,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 /**
@@ -64,7 +65,7 @@ public class GitWagon extends StreamWagon {
     /**
      * Credentials provider.
      */
-    private UsernamePasswordCredentialsProvider credentialsProvider;
+    private CredentialsProvider credentialsProvider;
 
     /**
      * Git cache.
@@ -167,9 +168,10 @@ public class GitWagon extends StreamWagon {
      * 
      * @param resourceName
      *            resource name.
-     * @return file used for the resourse.
+     * @return file used for the resource.
      * @throws IOException
      * @throws GitAPIException
+     *             problem with the GIT API.
      * @throws URISyntaxException
      */
     private File getFileForResource(final String resourceName)
@@ -242,10 +244,15 @@ public class GitWagon extends StreamWagon {
         gitDir.delete();
         gitDir.mkdir();
 
-        credentialsProvider = new UsernamePasswordCredentialsProvider(
-                getAuthenticationInfo().getUserName(), getAuthenticationInfo()
-                        .getPassword() == null ? "" //$NON-NLS-1$
-                        : getAuthenticationInfo().getPassword());
+        if (getAuthenticationInfo().getUserName() != null) {
+            credentialsProvider = new UsernamePasswordCredentialsProvider(
+                    getAuthenticationInfo().getUserName(),
+                    getAuthenticationInfo().getPassword() == null ? "" //$NON-NLS-1$
+                            : getAuthenticationInfo().getPassword());
+        } else {
+            credentialsProvider = new PassphraseCredentialsProvider(
+                    getAuthenticationInfo().getPassword());
+        }
         final Git git = Git.cloneRepository().setURI(gitRepositoryUri)
                 .setCredentialsProvider(credentialsProvider)
                 .setBranch(gitUri.getBranchName()).setDirectory(gitDir).call();

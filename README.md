@@ -36,13 +36,7 @@ follows:
         </site>
     </distributionManagement>
 
-The `<id>` should correspond to any authentication settings in `settings.xml`,
-for example:
-
-    <server>
-        <id>gh-pages</id>
-        <username>git</username>
-    </server>
+The `<id>` to represent the authentication details in `settings.xml`.
 
 The `<name>` can be any value.
 
@@ -51,3 +45,17 @@ also be specified between the `?` and `#` characters.  The `#` at the end is
 required to prevent additional characters that will be appended by Maven to
 be considered as part of the original URL.
 
+Protected private keys
+----------------------
+If you are using a passphrase to protect your private key, then in 
+`settings.xml`, then should be a `<server>` definition with the `<id>` 
+corresponding to the `<distributionManagement><site><id>` without the 
+`<user>` for example:
+
+    <server>
+        <id>gh-pages</id>
+        <password>privatekeypassword</password>
+    </server>
+
+If you're not protecting your private key, then no additional changes are 
+needed in `settings.xml`

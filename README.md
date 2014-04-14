@@ -59,3 +59,11 @@ corresponding to the `<distributionManagement><site><id>` without the
 
 If you're not protecting your private key, then no additional changes are 
 needed in `settings.xml`
+
+Parent project reference
+------------------------
+At the moment if you are referencing the parent project, the URL does not
+get rendered correctly and there is no way around it at the moment.  This
+is a fundamental flaw in how the Maven site is built by Maven core plugins,
+but determining which component (e.g. Doxia, maven-site-plugin, plexus)
+isn't trivial.

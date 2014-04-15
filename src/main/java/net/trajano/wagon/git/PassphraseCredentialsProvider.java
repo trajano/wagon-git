@@ -1,6 +1,5 @@
 package net.trajano.wagon.git;
 
-import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.transport.CredentialItem;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.URIish;
@@ -14,13 +13,22 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      */
     private final String passphrase;
 
+    /**
+     * Constructs the provider using a given passphrase.
+     * 
+     * @param passphrase
+     *            passphrase
+     */
     public PassphraseCredentialsProvider(final String passphrase) {
+        super();
         this.passphrase = passphrase;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean get(final URIish uriish, final CredentialItem... items)
-            throws UnsupportedCredentialItem {
+    public boolean get(final URIish uriish, final CredentialItem... items) {
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {
                 ((CredentialItem.StringType) item).setValue(passphrase);
@@ -30,11 +38,21 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @return <code>true</code>
+     */
     @Override
     public boolean isInteractive() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @return <code>true</code>
+     */
     @Override
     public boolean supports(final CredentialItem... items) {
         return true;

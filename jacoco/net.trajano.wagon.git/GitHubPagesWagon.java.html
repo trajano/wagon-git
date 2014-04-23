@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GitHubPagesWagon.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Git Wagon Provider</a> &gt; <a href="index.source.html" class="el_package">net.trajano.wagon.git</a> &gt; <span class="el_source">GitHubPagesWagon.java</span></div><h1>GitHubPagesWagon.java</h1><pre class="source lang-java linenums">package net.trajano.wagon.git;
 
-import static java.lang.String.format;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
+import java.net.URI;
 import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.trajano.wagon.git.internal.AbstractGitWagon;
+import net.trajano.wagon.git.internal.GitUri;
 
 import org.apache.maven.wagon.ConnectionException;
-import org.apache.maven.wagon.InputData;
-import org.apache.maven.wagon.OutputData;
-import org.apache.maven.wagon.ResourceDoesNotExistException;
-import org.apache.maven.wagon.StreamWagon;
-import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
-import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.RefUpdate;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.xbill.DNS.CNAMERecord;
+import org.xbill.DNS.Lookup;
 import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 /**
  * Github Pages Wagon.
  */
 @Component(role = Wagon.class, hint = &quot;github&quot;, instantiationStrategy = &quot;per-lookup&quot;)
-<span class="nc" id="L41">public class GitHubPagesWagon extends StreamWagon {</span>
+<span class="fc" id="L26">public class GitHubPagesWagon extends AbstractGitWagon {</span>
+
+    /**
+     * Github pages host pattern.
+     */
+<span class="fc" id="L31">    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern</span>
+            .compile(&quot;([a-z]+)\\.github\\.io.?&quot;);
+
+    /**
+     * Github pages path pattern.
+     */
+<span class="fc" id="L37">    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern</span>
+            .compile(&quot;/([^/]+)(/.*)?&quot;);
 
     /**
      * Logger.
@@ -56,287 +53,62 @@ import org.xbill.DNS.TextParseException;
     private static final ResourceBundle R;
 
     static {
-<span class="nc" id="L59">        LOG = Logger.getLogger(&quot;net.trajano.wagon.git&quot;, MESSAGES);</span>
-<span class="nc" id="L60">        R = ResourceBundle.getBundle(MESSAGES);</span>
-<span class="nc" id="L61">    }</span>
+<span class="fc" id="L56">        LOG = Logger.getLogger(&quot;net.trajano.wagon.git&quot;, MESSAGES);</span>
+<span class="fc" id="L57">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="fc" id="L58">    }</span>
 
     /**
-     * Credentials provider.
-     */
-    private CredentialsProvider credentialsProvider;
-
-    /**
-     * Git cache.
-     */
-<span class="nc" id="L71">    private final ConcurrentMap&lt;String, Git&gt; gitCache = new ConcurrentHashMap&lt;String, Git&gt;();</span>
-
-    /**
-     * Git URI.
-     */
-    private GitUri gitUri;
-
-    /**
-     * This will commit the local changes and push them to the repository. If
-     * the method is unable to push to the repository without force, it will
-     * throw an exception. {@inheritDoc}
-     */
-    @Override
-    public void closeConnection() throws ConnectionException {
-        try {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">            for (final String gitRemoteUri : gitCache.keySet()) {</span>
-<span class="nc" id="L87">                final Git git = gitCache.get(gitRemoteUri);</span>
-<span class="nc" id="L88">                git.add().addFilepattern(&quot;.&quot;).call(); //$NON-NLS-1$</span>
-<span class="nc" id="L89">                git.commit().setMessage(R.getString(&quot;commitmessage&quot;)).call(); //$NON-NLS-1$</span>
-<span class="nc" id="L90">                git.push().setRemote(gitRemoteUri)</span>
-                        .setCredentialsProvider(credentialsProvider).call();
-<span class="nc" id="L92">                git.close();</span>
-<span class="nc" id="L93">                FileUtils.deleteDirectory(git.getRepository().getDirectory());</span>
-<span class="nc" id="L94">            }</span>
-<span class="nc" id="L95">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L96">            throw new ConnectionException(e.getMessage(), e);</span>
-<span class="nc" id="L97">        } catch (final IOException e) {</span>
-<span class="nc" id="L98">            throw new ConnectionException(e.getMessage(), e);</span>
-<span class="nc" id="L99">        }</span>
-<span class="nc" id="L100">    }</span>
-
-    /**
-     * This will read from the working copy. File modification date would not be
-     * available as it does not really have any meaningful value. {@inheritDoc}
-     *
-     * @throws ResourceDoesNotExistException
-     *             when the file does not exist
-     * @throws AuthorizationException
-     *             when the file cannot be read
-     */
-    @Override
-    public void fillInputData(final InputData inputData)
-            throws TransferFailedException, ResourceDoesNotExistException,
-            AuthorizationException {
-        try {
-<span class="nc" id="L116">            final File file = getFileForResource(inputData.getResource()</span>
-                    .getName());
-<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (!file.exists()) {</span>
-<span class="nc" id="L119">                throw new ResourceDoesNotExistException(format(</span>
-                        R.getString(&quot;filenotfound&quot;), file)); //$NON-NLS-1$
-            }
-<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (!file.canRead()) {</span>
-<span class="nc" id="L123">                throw new AuthorizationException(format(</span>
-                        R.getString(&quot;cannotreadfile&quot;), file)); //$NON-NLS-1$
-            }
-<span class="nc" id="L126">            inputData.setInputStream(new FileInputStream(file));</span>
-<span class="nc" id="L127">            inputData.getResource().setContentLength(file.length());</span>
-<span class="nc" id="L128">        } catch (final IOException e) {</span>
-<span class="nc" id="L129">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L130">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L131">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L132">        } catch (final URISyntaxException e) {</span>
-<span class="nc" id="L133">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L134">        }</span>
-<span class="nc" id="L135">    }</span>
-
-    /**
-     * This will write to the working copy. {@inheritDoc}
-     */
-    @Override
-    public void fillOutputData(final OutputData outputData)
-            throws TransferFailedException {
-        try {
-<span class="nc" id="L144">            final File file = getFileForResource(outputData.getResource()</span>
-                    .getName());
-<span class="nc bnc" id="L146" title="All 4 branches missed.">            if (!file.getParentFile().mkdirs()</span>
-                    &amp;&amp; !file.getParentFile().exists()) {
-<span class="nc" id="L148">                throw new TransferFailedException(format(</span>
-                        R.getString(&quot;unabletocreatedirs&quot;), //$NON-NLS-1$
-                        file.getParentFile()));
-            }
-<span class="nc" id="L152">            outputData.setOutputStream(new FileOutputStream(file));</span>
-<span class="nc" id="L153">        } catch (final IOException e) {</span>
-<span class="nc" id="L154">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L155">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L156">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L157">        } catch (final URISyntaxException e) {</span>
-<span class="nc" id="L158">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L159">        }</span>
-<span class="nc" id="L160">    }</span>
-
-    /**
-     * This will get the file object for the given resource relative to the
-     * {@link Git} specified for the connection. It will handle resources where
-     * it jumps up past the parent folder.
-     *
-     * @param resourceName
-     *            resource name.
-     * @return file used for the resource.
-     * @throws IOException
-     * @throws GitAPIException
-     *             problem with the GIT API.
-     * @throws URISyntaxException
-     */
-    private File getFileForResource(final String resourceName)
-            throws GitAPIException, IOException, URISyntaxException {
-        // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
-        // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
-<span class="nc" id="L179">        final GitUri resolved = gitUri.resolve(resourceName);</span>
-<span class="nc" id="L180">        final Git resourceGit = getGit(resolved.getGitRepositoryUri());</span>
-<span class="nc" id="L181">        return new File(resourceGit.getRepository().getWorkTree(),</span>
-                resolved.getResource());
-    }
-
-    /**
-     * {@inheritDoc}
-     * &lt;p&gt;
-     * Warnings are suppressed for false positive with Sonar and multiple
-     * exceptions on public API. {@inheritDoc}
-     * &lt;/p&gt;
-     */
-    @Override
-    @SuppressWarnings(&quot;all&quot;)
-    public List&lt;String&gt; getFileList(final String directory)
-            throws TransferFailedException, ResourceDoesNotExistException,
-            AuthorizationException {
-        final File dir;
-        try {
-<span class="nc" id="L199">            dir = getFileForResource(directory);</span>
-<span class="nc" id="L200">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L201">            throw new AuthorizationException(e.getMessage(), e);</span>
-<span class="nc" id="L202">        } catch (final IOException e) {</span>
-<span class="nc" id="L203">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L204">        } catch (final URISyntaxException e) {</span>
-<span class="nc" id="L205">            throw new ResourceDoesNotExistException(e.getMessage(), e);</span>
-<span class="nc" id="L206">        }</span>
-<span class="nc" id="L207">        final File[] files = dir.listFiles();</span>
-<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (files == null) {</span>
-<span class="nc" id="L209">            throw new ResourceDoesNotExistException(format(</span>
-                    R.getString(&quot;dirnotfound&quot;), dir)); //$NON-NLS-1$
-        }
-<span class="nc" id="L212">        final List&lt;String&gt; list = new LinkedList&lt;String&gt;();</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        for (final File file : files) {</span>
-<span class="nc" id="L214">            String name = file.getName();</span>
-<span class="nc bnc" id="L215" title="All 4 branches missed.">            if (file.isDirectory() &amp;&amp; !name.endsWith(&quot;/&quot;)) { //$NON-NLS-1$</span>
-<span class="nc" id="L216">                name += &quot;/&quot;; // NOPMD this is easier to read. //$NON-NLS-1$</span>
-            }
-<span class="nc" id="L218">            list.add(name);</span>
-        }
-<span class="nc" id="L220">        return list;</span>
-    }
-
-    /**
-     * This will create or refresh the working copy. If the working copy cannot
-     * be pulled cleanly this method will fail.
-     *
-     * @param gitRepositoryUri
-     *            remote git repository URI string
-     * @return git
-     * @throws GitAPIException
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    private Git getGit(final String gitRepositoryUri) throws GitAPIException,
-            IOException, URISyntaxException {
-<span class="nc" id="L236">        final Git cachedGit = gitCache.get(gitRepositoryUri);</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (cachedGit != null) {</span>
-<span class="nc" id="L238">            return cachedGit;</span>
-        }
-<span class="nc" id="L240">        final File gitDir = File.createTempFile(</span>
-                gitRepositoryUri.replaceAll(&quot;[^A-Za-z]&quot;, &quot;_&quot;), &quot;wagon-git&quot;); //$NON-NLS-1$
-<span class="nc" id="L242">        gitDir.delete();</span>
-<span class="nc" id="L243">        gitDir.mkdir();</span>
-
-<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (getAuthenticationInfo().getUserName() != null) {</span>
-<span class="nc bnc" id="L246" title="All 2 branches missed.">            credentialsProvider = new UsernamePasswordCredentialsProvider(</span>
-                    getAuthenticationInfo().getUserName(),
-                    getAuthenticationInfo().getPassword() == null ? &quot;&quot; //$NON-NLS-1$
-                            : getAuthenticationInfo().getPassword());
-        } else {
-<span class="nc" id="L251">            credentialsProvider = new PassphraseCredentialsProvider(</span>
-                    getAuthenticationInfo().getPassword());
-        }
-<span class="nc" id="L254">        final Git git = Git.cloneRepository().setURI(gitRepositoryUri)</span>
-                .setCredentialsProvider(credentialsProvider)
-                .setBranch(gitUri.getBranchName()).setDirectory(gitDir).call();
-<span class="nc bnc" id="L257" title="All 2 branches missed.">        if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {</span>
-<span class="nc" id="L258">            LOG.log(Level.INFO, &quot;missingbranch&quot;, gitUri.getBranchName());</span>
-<span class="nc" id="L259">            final RefUpdate refUpdate = git.getRepository().getRefDatabase()</span>
-                    .newUpdate(Constants.HEAD, true);
-<span class="nc" id="L261">            refUpdate.setForceUpdate(true);</span>
-<span class="nc" id="L262">            refUpdate.link(&quot;refs/heads/&quot; + gitUri.getBranchName()); //$NON-NLS-1$</span>
-        }
-<span class="nc" id="L264">        gitCache.put(gitRepositoryUri, git);</span>
-<span class="nc" id="L265">        return git;</span>
-    }
-
-    /**
-     * Sets the initial git URI.
-     */
-    @Override
-    protected void openConnectionInternal() throws ConnectionException,
-            AuthenticationException {
-        try {
-<span class="nc" id="L275">            gitUri = GitUri.buildFromGithubPages(getRepository().getUrl());</span>
-<span class="nc" id="L276">        } catch (final TextParseException e) {</span>
-<span class="nc" id="L277">            throw new ConnectionException(e.getMessage());</span>
-<span class="nc" id="L278">        }</span>
-<span class="nc" id="L279">    }</span>
-
-    /**
-     * If the destination directory is not inside the source directory (denoted
-     * by starting with &quot;../&quot;), then another git repository is registered.
-     * Warnings are suppressed for false positive with Sonar and multiple
-     * exceptions on public API. {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings(&quot;all&quot;)
-    public void putDirectory(final File sourceDirectory,
-            final String destinationDirectory) throws TransferFailedException,
-            ResourceDoesNotExistException, AuthorizationException {
-        try {
-<span class="nc bnc" id="L293" title="All 2 branches missed.">            if (!sourceDirectory.isDirectory()) {</span>
-<span class="nc" id="L294">                throw new ResourceDoesNotExistException(format(</span>
-                        R.getString(&quot;dirnotfound&quot;), sourceDirectory)); //$NON-NLS-1$
-            }
-<span class="nc" id="L297">            final File fileForResource = getFileForResource(destinationDirectory);</span>
-<span class="nc" id="L298">            FileUtils.copyDirectoryStructure(sourceDirectory, fileForResource);</span>
-<span class="nc" id="L299">        } catch (final IOException e) {</span>
-<span class="nc" id="L300">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L301">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L302">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L303">        } catch (final URISyntaxException e) {</span>
-<span class="nc" id="L304">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L305">        }</span>
-<span class="nc" id="L306">    }</span>
-
-    /**
+     * Builds a GitUri from a GitHub Pages URL. It performs a DNS lookup for the
+     * CNAME if the host does not match {@link #GITHUB_PAGES_HOST_PATTERN}.
      * {@inheritDoc}
      */
     @Override
-    public boolean resourceExists(final String resourceName)
-            throws TransferFailedException {
-        final File file;
+    public GitUri buildGitUri(final String repositoryUrl)
+            throws ConnectionException, AuthenticationException {
         try {
-<span class="nc" id="L316">            file = getFileForResource(resourceName);</span>
-<span class="nc" id="L317">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L318">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L319">        } catch (final IOException e) {</span>
-<span class="nc" id="L320">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L321">        } catch (final URISyntaxException e) {</span>
-<span class="nc" id="L322">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L323">        }</span>
-
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (resourceName.endsWith(&quot;/&quot;)) { //$NON-NLS-1$</span>
-<span class="nc" id="L326">            return file.isDirectory();</span>
+<span class="fc" id="L69">            final URI uri = URI.create(</span>
+                    URI.create(repositoryUrl).getSchemeSpecificPart())
+                    .normalize();
+<span class="fc" id="L72">            final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());</span>
+            final String username;
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (m.matches()) {</span>
+<span class="fc" id="L75">                username = m.group(1);</span>
+            } else {
+<span class="fc" id="L77">                final String cnameHost = getCnameForHost(uri.getHost());</span>
+<span class="fc" id="L78">                final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                if (!m2.matches()) {</span>
+<span class="nc" id="L80">                    throw new RuntimeException(String.format(</span>
+                            R.getString(&quot;invalidGitHubPagesHost&quot;),
+                            repositoryUrl));
+                }
+<span class="fc" id="L84">                username = m2.group(1);</span>
+            }
+<span class="fc" id="L86">            final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri</span>
+                    .getPath());
+<span class="fc" id="L88">            pathMatcher.matches();</span>
+<span class="fc" id="L89">            return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
+                    + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, &quot;&quot;);
+<span class="nc" id="L91">        } catch (final TextParseException e) {</span>
+<span class="nc" id="L92">            throw new ConnectionException(e.getMessage());</span>
         }
-
-<span class="nc" id="L329">        return file.exists();</span>
     }
 
     /**
-     * Directory copy is supported.
+     * Gets the CNAME record for the host.
      *
-     * @return true
+     * @param host
+     *            host
+     * @return CNAME record may return null if not found.
+     * @throws TextParseException
      */
-    @Override
-    public boolean supportsDirectoryCopy() {
-<span class="nc" id="L339">        return true;</span>
+    private String getCnameForHost(final String host) throws TextParseException {
+<span class="fc" id="L105">        final Lookup lookup = new Lookup(host, Type.CNAME);</span>
+<span class="fc" id="L106">        lookup.run();</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (lookup.getAnswers().length == 0) {</span>
+<span class="nc" id="L108">            LOG.log(Level.SEVERE, &quot;unableToFindCNAME&quot;, new Object[] { host });</span>
+<span class="nc" id="L109">            return null;</span>
+        }
+<span class="fc" id="L111">        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

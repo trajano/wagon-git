@@ -1,4 +1,4 @@
-package net.trajano.wagon.git;
+package net.trajano.wagon.git.internal;
 
 import org.eclipse.jgit.transport.CredentialItem;
 import org.eclipse.jgit.transport.CredentialsProvider;

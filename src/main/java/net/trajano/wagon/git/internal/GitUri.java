@@ -1,4 +1,4 @@
-package net.trajano.wagon.git;
+package net.trajano.wagon.git.internal;
 
 import static java.lang.String.format;
 

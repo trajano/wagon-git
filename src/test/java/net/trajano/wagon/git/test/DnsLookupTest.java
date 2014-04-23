@@ -1,7 +1,7 @@
 package net.trajano.wagon.git.test;
 
 import static org.junit.Assert.assertEquals;
-import net.trajano.wagon.git.GitUri;
+import net.trajano.wagon.git.internal.GitUri;
 
 import org.junit.Test;
 import org.xbill.DNS.CNAMERecord;

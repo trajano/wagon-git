@@ -2,7 +2,7 @@ package net.trajano.wagon.git.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import net.trajano.wagon.git.GitUri;
+import net.trajano.wagon.git.internal.GitUri;
 
 import org.junit.Ignore;
 import org.junit.Test;

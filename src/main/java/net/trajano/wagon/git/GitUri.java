@@ -6,6 +6,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.xbill.DNS.CNAMERecord;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 /**
  * Git URI. This provides the logic to extract the components from a URI. The
@@ -13,6 +20,61 @@ import java.net.URLDecoder;
  * <code>git:gitSpecificUri?branchName#relativeDirectory</code>.
  */
 public class GitUri {
+    /**
+     * Github pages host pattern.
+     */
+    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern
+            .compile("([a-z]+)\\.github\\.io.?");
+
+    /**
+     * Github pages path pattern.
+     */
+    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern
+            .compile("/([^/]+)(/.*)?");
+
+    /**
+     * Builds a GitUri from a GitHub Pages URL.  It performs a DNS lookup for
+     * the CNAME if the host does not match {@link #GITHUB_PAGES_HOST_PATTERN}.
+     * 
+     * @param gitHubPagesUrl
+     *            GitHub Pages URL
+     * @return a GitURI based on the GitHubPages URL
+     * @throws TextParseException
+     */
+    public static GitUri buildFromGithubPages(final String gitHubPagesUrl)
+            throws TextParseException {
+        final URI uri = URI.create(
+                URI.create(gitHubPagesUrl).getSchemeSpecificPart()).normalize();
+        final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());
+        final String username;
+        if (m.matches()) {
+            username = m.group(1);
+        } else {
+            final String cnameHost = getCnameForHost(uri.getHost());
+            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);
+            if (!m2.matches()) {
+                throw new RuntimeException("Invalid host for github pages "
+                        + gitHubPagesUrl);
+            }
+            username = m2.group(1);
+        }
+        final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri
+                .getPath());
+        pathMatcher.matches();
+        return new GitUri("ssh://git@github.com/" + username + "/"
+                + pathMatcher.group(1) + ".git", "gh-pages", "");
+    }
+
+    private static String getCnameForHost(final String host)
+            throws TextParseException {
+        final Lookup lookup = new Lookup(host, Type.CNAME);
+        lookup.run();
+        if (lookup.getAnswers().length == 0) {
+            return null;
+        }
+        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();
+    }
+
     /**
      * Branch name.
      */
@@ -30,7 +92,7 @@ public class GitUri {
 
     /**
      * Constructs the object from a URI string that contains "git:" schema.
-     * 
+     *
      * @param uriString
      *            URI string.
      * @throws URISyntaxException
@@ -47,7 +109,23 @@ public class GitUri {
     }
 
     /**
-     * 
+     *
+     * @param gitRepositoryUri
+     *            git repository URL.
+     * @param branchName
+     *            branch name usually "gh-pages"
+     * @param resource
+     *            resource
+     */
+    private GitUri(final String gitRepositoryUri, final String branchName,
+            final String resource) {
+        this.gitRepositoryUri = gitRepositoryUri;
+        this.branchName = branchName;
+        this.resource = resource;
+    }
+
+    /**
+     *
      * @param gitUri
      *            valid git URI (i.e. no git: schema).
      */
@@ -61,7 +139,7 @@ public class GitUri {
 
     /**
      * Branch name.
-     * 
+     *
      * @return branch name
      */
     public String getBranchName() {
@@ -71,7 +149,7 @@ public class GitUri {
     /**
      * Git repository URI. This returns a string as that is what is being used
      * by the JGit API.
-     * 
+     *
      * @return Git repository URI
      */
     public String getGitRepositoryUri() {
@@ -86,7 +164,7 @@ public class GitUri {
      * Resolves a new {@link GitUri} with the fragment. The schema portion will
      * find the last occurrence of a URI path segment with a "?" character as
      * the Git URI with the branch name.
-     * 
+     *
      * @param fragment
      *            may contain escaped characters.
      * @return resolved {@link GitUri}

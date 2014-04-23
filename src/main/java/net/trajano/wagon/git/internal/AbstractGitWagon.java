@@ -21,6 +21,7 @@ import org.apache.maven.wagon.OutputData;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.StreamWagon;
 import org.apache.maven.wagon.TransferFailedException;
+import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -68,7 +69,22 @@ public abstract class AbstractGitWagon extends StreamWagon {
     /**
      * Git URI.
      */
-    protected GitUri gitUri;
+    private GitUri gitUri;
+
+    /**
+     * Builds the wagon specific Git URI based on the repository URL. This is
+     * made public rather than protected to allow testing of the method.
+     *
+     * @param repositoryUrl
+     *            repository URL
+     * @return Git URI
+     * @throws ConnectionException
+     *             problem when connecting
+     * @throws AuthenticationException
+     *             problem with authentication
+     */
+    public abstract GitUri buildGitUri(String repositoryUrl)
+            throws ConnectionException, AuthenticationException;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -83,7 +99,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                 git.add().addFilepattern(".").call(); //$NON-NLS-1$
                 git.commit().setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
                 git.push().setRemote(gitRemoteUri)
-                        .setCredentialsProvider(credentialsProvider).call();
+                .setCredentialsProvider(credentialsProvider).call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository().getDirectory());
             }
@@ -227,7 +243,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws URISyntaxException
      */
     private Git getGit(final String gitRepositoryUri) throws GitAPIException,
-            IOException, URISyntaxException {
+    IOException, URISyntaxException {
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;
@@ -258,6 +274,15 @@ public abstract class AbstractGitWagon extends StreamWagon {
         }
         gitCache.put(gitRepositoryUri, git);
         return git;
+    }
+
+    /**
+     * Sets the initial git URI.
+     */
+    @Override
+    protected void openConnectionInternal() throws ConnectionException,
+    AuthenticationException {
+        gitUri = buildGitUri(getRepository().getUrl());
     }
 
     /**

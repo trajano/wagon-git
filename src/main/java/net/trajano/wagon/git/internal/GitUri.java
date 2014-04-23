@@ -4,15 +4,7 @@ import static java.lang.String.format;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.xbill.DNS.CNAMERecord;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Type;
 
 /**
  * Git URI. This provides the logic to extract the components from a URI. The
@@ -20,60 +12,6 @@ import org.xbill.DNS.Type;
  * <code>git:gitSpecificUri?branchName#relativeDirectory</code>.
  */
 public class GitUri {
-    /**
-     * Github pages host pattern.
-     */
-    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern
-            .compile("([a-z]+)\\.github\\.io.?");
-
-    /**
-     * Github pages path pattern.
-     */
-    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern
-            .compile("/([^/]+)(/.*)?");
-
-    /**
-     * Builds a GitUri from a GitHub Pages URL.  It performs a DNS lookup for
-     * the CNAME if the host does not match {@link #GITHUB_PAGES_HOST_PATTERN}.
-     * 
-     * @param gitHubPagesUrl
-     *            GitHub Pages URL
-     * @return a GitURI based on the GitHubPages URL
-     * @throws TextParseException
-     */
-    public static GitUri buildFromGithubPages(final String gitHubPagesUrl)
-            throws TextParseException {
-        final URI uri = URI.create(
-                URI.create(gitHubPagesUrl).getSchemeSpecificPart()).normalize();
-        final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());
-        final String username;
-        if (m.matches()) {
-            username = m.group(1);
-        } else {
-            final String cnameHost = getCnameForHost(uri.getHost());
-            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);
-            if (!m2.matches()) {
-                throw new RuntimeException("Invalid host for github pages "
-                        + gitHubPagesUrl);
-            }
-            username = m2.group(1);
-        }
-        final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri
-                .getPath());
-        pathMatcher.matches();
-        return new GitUri("ssh://git@github.com/" + username + "/"
-                + pathMatcher.group(1) + ".git", "gh-pages", "");
-    }
-
-    private static String getCnameForHost(final String host)
-            throws TextParseException {
-        final Lookup lookup = new Lookup(host, Type.CNAME);
-        lookup.run();
-        if (lookup.getAnswers().length == 0) {
-            return null;
-        }
-        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();
-    }
 
     /**
      * Branch name.
@@ -91,24 +29,7 @@ public class GitUri {
     private final String resource;
 
     /**
-     * Constructs the object from a URI string that contains "git:" schema.
-     *
-     * @param uriString
-     *            URI string.
-     * @throws URISyntaxException
-     *             parsing exception
-     */
-    public GitUri(final String uriString) throws URISyntaxException {
-        final URI uri = new URI(uriString.replace("##", "#"));
-        final URI gitUri = new URI(uri.getSchemeSpecificPart());
-        branchName = gitUri.getQuery();
-        final String asciiUriString = gitUri.toASCIIString();
-        gitRepositoryUri = asciiUriString.substring(0,
-                asciiUriString.indexOf('?'));
-        resource = uri.getFragment();
-    }
-
-    /**
+     * Constructs the URI based on the parts.
      *
      * @param gitRepositoryUri
      *            git repository URL.
@@ -117,7 +38,7 @@ public class GitUri {
      * @param resource
      *            resource
      */
-    private GitUri(final String gitRepositoryUri, final String branchName,
+    public GitUri(final String gitRepositoryUri, final String branchName,
             final String resource) {
         this.gitRepositoryUri = gitRepositoryUri;
         this.branchName = branchName;

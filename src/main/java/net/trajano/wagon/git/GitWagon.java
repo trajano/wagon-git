@@ -1,5 +1,6 @@
 package net.trajano.wagon.git;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.trajano.wagon.git.internal.AbstractGitWagon;
@@ -18,17 +19,24 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends AbstractGitWagon {
-
     /**
-     * Sets the initial git URI.
+     * Constructs the object from a URI string that contains "git:" schema.
+     * {@inheritDoc}
      */
     @Override
-    protected void openConnectionInternal() throws ConnectionException,
-    AuthenticationException {
+    public GitUri buildGitUri(final String repositoryUrl)
+            throws ConnectionException, AuthenticationException {
         try {
-            gitUri = new GitUri(getRepository().getUrl());
+            final URI uri = new URI(repositoryUrl.replace("##", "#"));
+            final URI gitUri = new URI(uri.getSchemeSpecificPart());
+            final String branchName = gitUri.getQuery();
+            final String asciiUriString = gitUri.toASCIIString();
+            final String gitRepositoryUri = asciiUriString.substring(0,
+                    asciiUriString.indexOf('?'));
+            final String resource = uri.getFragment();
+            return new GitUri(gitRepositoryUri, branchName, resource);
         } catch (final URISyntaxException e) {
-            throw new ConnectionException(e.getMessage(), e);
+            throw new ConnectionException(e.getMessage());
         }
     }
 }

@@ -1,8 +1,10 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./PassphraseCredentialsProvider.html" title="net.trajano.wagon.git.PassphraseCredentialsProvider" alt="" coords="15,16,217,43"/>
+<area shape="rect" id="node1_0" href="./PassphraseCredentialsProvider.html" title="net.trajano.wagon.git.PassphraseCredentialsProvider" alt="" coords="16,17,216,42"/>
 <area shape="rect" id="node1" href="./PassphraseCredentialsProvider.html" title="&lt;TABLE&gt;" alt="" coords="5,5,227,53"/>
-<area shape="rect" id="node2_1" href="./GitWagon.html" title="net.trajano.wagon.git.GitWagon" alt="" coords="262,16,341,43"/>
-<area shape="rect" id="node2" href="./GitWagon.html" title="&lt;TABLE&gt;" alt="" coords="251,5,351,53"/>
-<area shape="rect" id="node3_2" href="./GitUri.html" title="net.trajano.wagon.git.GitUri" alt="" coords="385,16,439,43"/>
-<area shape="rect" id="node3" href="./GitUri.html" title="&lt;TABLE&gt;" alt="" coords="375,5,449,53"/>
+<area shape="rect" id="node2_1" href="./GitWagon.html" title="net.trajano.wagon.git.GitWagon" alt="" coords="261,17,339,42"/>
+<area shape="rect" id="node2" href="./GitWagon.html" title="&lt;TABLE&gt;" alt="" coords="251,5,349,53"/>
+<area shape="rect" id="node3_2" href="./GitUri.html" title="net.trajano.wagon.git.GitUri" alt="" coords="385,17,437,42"/>
+<area shape="rect" id="node3" href="./GitUri.html" title="&lt;TABLE&gt;" alt="" coords="374,5,447,53"/>
+<area shape="rect" id="node4_3" href="./GitHubPagesWagon.html" title="net.trajano.wagon.git.GitHubPagesWagon" alt="" coords="482,17,619,42"/>
+<area shape="rect" id="node4" href="./GitHubPagesWagon.html" title="&lt;TABLE&gt;" alt="" coords="471,5,630,53"/>
 </map>

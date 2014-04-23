@@ -1,8 +1,12 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="15,16,118,43"/>
+<area shape="rect" id="node1_0" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="16,17,119,42"/>
 <area shape="rect" id="node1" href="./GitWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="5,5,129,53"/>
-<area shape="rect" id="node2_1" href="./GitWagonExceptionTest.html" title="net.trajano.wagon.git.test.GitWagonExceptionTest" alt="" coords="163,16,325,43"/>
-<area shape="rect" id="node2" href="./GitWagonExceptionTest.html" title="&lt;TABLE&gt;" alt="" coords="153,5,335,53"/>
-<area shape="rect" id="node3_2" href="./GitUriTest.html" title="net.trajano.wagon.git.test.GitUriTest" alt="" coords="371,16,448,43"/>
-<area shape="rect" id="node3" href="./GitUriTest.html" title="&lt;TABLE&gt;" alt="" coords="360,5,459,53"/>
+<area shape="rect" id="node2_1" href="./GitWagonExceptionTest.html" title="net.trajano.wagon.git.test.GitWagonExceptionTest" alt="" coords="165,17,325,42"/>
+<area shape="rect" id="node2" href="./GitWagonExceptionTest.html" title="&lt;TABLE&gt;" alt="" coords="154,5,335,53"/>
+<area shape="rect" id="node3_2" href="./GitUriTest.html" title="net.trajano.wagon.git.test.GitUriTest" alt="" coords="370,17,447,42"/>
+<area shape="rect" id="node3" href="./GitUriTest.html" title="&lt;TABLE&gt;" alt="" coords="359,5,458,53"/>
+<area shape="rect" id="node4_3" href="./GitHubPagesWagonTest.html" title="net.trajano.wagon.git.test.GitHubPagesWagonTest" alt="" coords="493,17,655,42"/>
+<area shape="rect" id="node4" href="./GitHubPagesWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="482,5,666,53"/>
+<area shape="rect" id="node5_4" href="./DnsLookupTest.html" title="net.trajano.wagon.git.test.DnsLookupTest" alt="" coords="701,17,810,42"/>
+<area shape="rect" id="node5" href="./DnsLookupTest.html" title="&lt;TABLE&gt;" alt="" coords="690,5,821,53"/>
 </map>

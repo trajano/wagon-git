@@ -27,5 +27,17 @@ digraph G {
 <tr><td align="center" balign="center"> GitUriTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./GitUriTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.trajano.wagon.git.test.GitHubPagesWagonTest
+	c3 [label=<<table title="net.trajano.wagon.git.test.GitHubPagesWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitHubPagesWagonTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> GitHubPagesWagonTest </td></tr>
+		</table></td></tr>
+		</table>>, URL="./GitHubPagesWagonTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.trajano.wagon.git.test.DnsLookupTest
+	c4 [label=<<table title="net.trajano.wagon.git.test.DnsLookupTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DnsLookupTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> DnsLookupTest </td></tr>
+		</table></td></tr>
+		</table>>, URL="./DnsLookupTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 }
 

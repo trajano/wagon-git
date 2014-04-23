@@ -1,4 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Git Wagon Provider,net.trajano.wagon.git,GitWagon,200,356,8,22,39,74,7,20,0,12
 Git Wagon Provider,net.trajano.wagon.git,PassphraseCredentialsProvider,31,6,4,0,7,3,5,1,3,1
-Git Wagon Provider,net.trajano.wagon.git,GitUri,14,164,3,5,3,32,2,8,0,6
+Git Wagon Provider,net.trajano.wagon.git,GitUri,28,268,5,9,5,54,4,13,0,10
+Git Wagon Provider,net.trajano.wagon.git,GitHubPagesWagon,553,0,30,0,113,0,27,0,12,0

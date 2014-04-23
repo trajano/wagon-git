@@ -102,8 +102,27 @@
 </pre></div>
 <p>If you&#x2019;re not protecting your private key, then no additional changes are needed in <tt>settings.xml</tt></p></div>
 <div class="section">
-<h2>Parent project reference<a name="Parent_project_reference"></a></h2>
-<p>At the moment if you are referencing the parent project, the URL does not get rendered correctly and there is no way around it at the moment. This is a fundamental flaw in how the Maven site is built by Maven core plugins, but determining which component (e.g. Doxia, maven-site-plugin, plexus) isn&#x2019;t trivial.</p></div>
+<h2>Module and parent references<a name="Module_and_parent_references"></a></h2>
+<p>At the moment if you are referencing the parent project or modules, using the following in the <tt>site.xml</tt> file.</p>
+
+<div class="source">
+<pre>&lt;menu ref=&quot;parent&quot; inherit=&quot;top&quot; /&gt;
+&lt;menu ref=&quot;modules&quot; inherit=&quot;top&quot; /&gt;
+</pre></div>
+<p>The problem is a broken implementation of the path logic done by the <a class="externalLink" href="http://maven.apache.org/shared/maven-doxia-tools/">doxia-integation-tools</a> from Maven. A bug and patch has been provided by <a class="externalLink" href="http://www.trajano.net/">Archimedes Trajano</a> <a class="externalLink" href="http://jira.codehaus.org/browse/MSITE-709">MSITE-709</a> to resolve the issue. For those that need the fix immediately, an <a class="externalLink" href="http://site.trajano.net/maven-doxia-tools/doxia-integration-tools/">alternative doxia-integration-tools</a> has been made available and can be added as a dependency to the site plugin or as a build extension.</p>
+
+<div class="source">
+<pre> &lt;plugin&gt;
+     &lt;artifactId&gt;maven-site-plugin&lt;/artifactId&gt;
+     &lt;dependencies&gt;
+         &lt;dependency&gt;
+             &lt;groupId&gt;net.trajano.maven.doxia&lt;/groupId&gt;
+             &lt;artifactId&gt;doxia-integration-tools&lt;/artifactId&gt;
+             &lt;version&gt;2.0.0&lt;/version&gt;
+         &lt;/dependency&gt;
+     &lt;/dependencies&gt;
+ &lt;/plugin&gt;
+</pre></div></div>
 	      </div>
 	    </article>
 	  </div>

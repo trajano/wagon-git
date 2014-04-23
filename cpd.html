@@ -118,7 +118,7 @@
                 git.add().addFilepattern(&quot;.&quot;).call(); //$NON-NLS-1$
                 git.commit().setMessage(R.getString(&quot;commitmessage&quot;)).call(); //$NON-NLS-1$
                 git.push().setRemote(gitRemoteUri)
-                .setCredentialsProvider(credentialsProvider).call();
+                        .setCredentialsProvider(credentialsProvider).call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository().getDirectory());
             }
@@ -262,7 +262,7 @@
      * @throws URISyntaxException
      */
     private Git getGit(final String gitRepositoryUri) throws GitAPIException,
-    IOException, URISyntaxException {
+            IOException, URISyntaxException {
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;
@@ -300,7 +300,7 @@
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
-    AuthenticationException {
+            AuthenticationException {
         try {
             gitUri = GitUri.buildFromGithubPages(getRepository().getUrl());</pre></div></td></tr></table>
 <table border="0" class="bodyTable">

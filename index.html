@@ -71,7 +71,7 @@
 &lt;/plugin&gt;
 </pre></div></div>
 <div class="section">
-<h2>Usage<a name="Usage"></a></h2>
+<h2>Git Usage<a name="Git_Usage"></a></h2>
 <p>In the <tt>pom.xml</tt> the <tt>&lt;distributionManagement&gt;/&lt;site&gt;</tt> needs to be set as follows:</p>
 
 <div class="source">
@@ -79,13 +79,17 @@
     &lt;site&gt;
         &lt;id&gt;gh-pages&lt;/id&gt;
         &lt;name&gt;Trajano GitHub Pages&lt;/name&gt;
+        &lt;url&gt;github:http://trajano.github.io/trajano/&lt;/url&gt;
+        &lt;!--
         &lt;url&gt;git:ssh://git@github.com/trajano/trajano.git?gh-pages#&lt;/url&gt;
+        --&gt;
     &lt;/site&gt;
 &lt;/distributionManagement&gt;
 </pre></div>
 <p>The <tt>&lt;id&gt;</tt> to represent the authentication details in <tt>settings.xml</tt>.</p>
 <p>The <tt>&lt;name&gt;</tt> can be any value.</p>
-<p>The <tt>&lt;url&gt;</tt> must start with <tt>git:</tt> and end with a <tt>#</tt>. The branch name must also be specified between the <tt>?</tt> and <tt>#</tt> characters. The <tt>#</tt> at the end is required to prevent additional characters that will be appended by Maven to be considered as part of the original URL.</p></div>
+<p>For <a class="externalLink" href="https://pages.github.com/">GitHub Pages</a> the project URL should be prefixed with <tt>github:</tt>. If the host is not in the github.io subdomain, a CNAME lookup will be performed to determine the <a class="externalLink" href="http://github.com/">GitHub</a> user name.</p>
+<p>For generic git repositories, the <tt>&lt;url&gt;</tt> must start with <tt>git:</tt> and end with a <tt>#</tt>. The branch name must also be specified between the <tt>?</tt> and <tt>#</tt> characters. The <tt>#</tt> at the end is required to prevent additional characters that will be appended by Maven to be considered as part of the original URL.</p></div>
 <div class="section">
 <h2>Protected private keys<a name="Protected_private_keys"></a></h2>
 <p>If you are using a passphrase to protect your private key, then in <tt>settings.xml</tt>, then should be a <tt>&lt;server&gt;</tt> definition with the <tt>&lt;id&gt;</tt> corresponding to the <tt>&lt;distributionManagement&gt;&lt;site&gt;&lt;id&gt;</tt> without the <tt>&lt;user&gt;</tt> for example:</p>

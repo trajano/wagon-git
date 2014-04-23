@@ -32,38 +32,47 @@ public class GitUri {
 <span class="fc" id="L32">    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern</span>
             .compile(&quot;/([^/]+)(/.*)?&quot;);
 
+    /**
+     * Builds a GitUri from a GitHub Pages URL.  It performs a DNS lookup for
+     * the CNAME if the host does not match {@link #GITHUB_PAGES_HOST_PATTERN}.
+     * 
+     * @param gitHubPagesUrl
+     *            GitHub Pages URL
+     * @return a GitURI based on the GitHubPages URL
+     * @throws TextParseException
+     */
     public static GitUri buildFromGithubPages(final String gitHubPagesUrl)
             throws TextParseException {
-<span class="fc" id="L37">        final URI uri = URI.create(</span>
+<span class="fc" id="L46">        final URI uri = URI.create(</span>
                 URI.create(gitHubPagesUrl).getSchemeSpecificPart()).normalize();
-<span class="fc" id="L39">        final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());</span>
+<span class="fc" id="L48">        final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());</span>
         final String username;
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (m.matches()) {</span>
-<span class="fc" id="L42">            username = m.group(1);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (m.matches()) {</span>
+<span class="fc" id="L51">            username = m.group(1);</span>
         } else {
-<span class="fc" id="L44">            final String cnameHost = getCnameForHost(uri.getHost());</span>
-<span class="fc" id="L45">            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">            if (!m2.matches()) {</span>
-<span class="nc" id="L47">                throw new RuntimeException(&quot;Invalid host for github pages &quot;</span>
+<span class="fc" id="L53">            final String cnameHost = getCnameForHost(uri.getHost());</span>
+<span class="fc" id="L54">            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (!m2.matches()) {</span>
+<span class="nc" id="L56">                throw new RuntimeException(&quot;Invalid host for github pages &quot;</span>
                         + gitHubPagesUrl);
             }
-<span class="fc" id="L50">            username = m2.group(1);</span>
+<span class="fc" id="L59">            username = m2.group(1);</span>
         }
-<span class="fc" id="L52">        final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri</span>
+<span class="fc" id="L61">        final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri</span>
                 .getPath());
-<span class="fc" id="L54">        pathMatcher.matches();</span>
-<span class="fc" id="L55">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
+<span class="fc" id="L63">        pathMatcher.matches();</span>
+<span class="fc" id="L64">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
                 + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, &quot;&quot;);
     }
 
     private static String getCnameForHost(final String host)
             throws TextParseException {
-<span class="fc" id="L61">        final Lookup lookup = new Lookup(host, Type.CNAME);</span>
-<span class="fc" id="L62">        lookup.run();</span>
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (lookup.getAnswers().length == 0) {</span>
-<span class="nc" id="L64">            return null;</span>
+<span class="fc" id="L70">        final Lookup lookup = new Lookup(host, Type.CNAME);</span>
+<span class="fc" id="L71">        lookup.run();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if (lookup.getAnswers().length == 0) {</span>
+<span class="nc" id="L73">            return null;</span>
         }
-<span class="fc" id="L66">        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();</span>
+<span class="fc" id="L75">        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();</span>
     }
 
     /**
@@ -89,15 +98,15 @@ public class GitUri {
      * @throws URISyntaxException
      *             parsing exception
      */
-<span class="fc" id="L92">    public GitUri(final String uriString) throws URISyntaxException {</span>
-<span class="fc" id="L93">        final URI uri = new URI(uriString.replace(&quot;##&quot;, &quot;#&quot;));</span>
-<span class="fc" id="L94">        final URI gitUri = new URI(uri.getSchemeSpecificPart());</span>
-<span class="fc" id="L95">        branchName = gitUri.getQuery();</span>
-<span class="fc" id="L96">        final String asciiUriString = gitUri.toASCIIString();</span>
-<span class="fc" id="L97">        gitRepositoryUri = asciiUriString.substring(0,</span>
+<span class="fc" id="L101">    public GitUri(final String uriString) throws URISyntaxException {</span>
+<span class="fc" id="L102">        final URI uri = new URI(uriString.replace(&quot;##&quot;, &quot;#&quot;));</span>
+<span class="fc" id="L103">        final URI gitUri = new URI(uri.getSchemeSpecificPart());</span>
+<span class="fc" id="L104">        branchName = gitUri.getQuery();</span>
+<span class="fc" id="L105">        final String asciiUriString = gitUri.toASCIIString();</span>
+<span class="fc" id="L106">        gitRepositoryUri = asciiUriString.substring(0,</span>
                 asciiUriString.indexOf('?'));
-<span class="fc" id="L99">        resource = uri.getFragment();</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L108">        resource = uri.getFragment();</span>
+<span class="fc" id="L109">    }</span>
 
     /**
      *
@@ -109,24 +118,24 @@ public class GitUri {
      *            resource
      */
     private GitUri(final String gitRepositoryUri, final String branchName,
-<span class="fc" id="L112">            final String resource) {</span>
-<span class="fc" id="L113">        this.gitRepositoryUri = gitRepositoryUri;</span>
-<span class="fc" id="L114">        this.branchName = branchName;</span>
-<span class="fc" id="L115">        this.resource = resource;</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L121">            final String resource) {</span>
+<span class="fc" id="L122">        this.gitRepositoryUri = gitRepositoryUri;</span>
+<span class="fc" id="L123">        this.branchName = branchName;</span>
+<span class="fc" id="L124">        this.resource = resource;</span>
+<span class="fc" id="L125">    }</span>
 
     /**
      *
      * @param gitUri
      *            valid git URI (i.e. no git: schema).
      */
-<span class="fc" id="L123">    private GitUri(final URI gitUri) {</span>
-<span class="fc" id="L124">        branchName = gitUri.getQuery();</span>
-<span class="fc" id="L125">        final String asciiUriString = gitUri.toASCIIString();</span>
-<span class="fc" id="L126">        gitRepositoryUri = asciiUriString.substring(0,</span>
+<span class="fc" id="L132">    private GitUri(final URI gitUri) {</span>
+<span class="fc" id="L133">        branchName = gitUri.getQuery();</span>
+<span class="fc" id="L134">        final String asciiUriString = gitUri.toASCIIString();</span>
+<span class="fc" id="L135">        gitRepositoryUri = asciiUriString.substring(0,</span>
                 asciiUriString.lastIndexOf('?'));
-<span class="fc" id="L128">        resource = gitUri.getFragment();</span>
-<span class="fc" id="L129">    }</span>
+<span class="fc" id="L137">        resource = gitUri.getFragment();</span>
+<span class="fc" id="L138">    }</span>
 
     /**
      * Branch name.
@@ -134,7 +143,7 @@ public class GitUri {
      * @return branch name
      */
     public String getBranchName() {
-<span class="fc" id="L137">        return branchName;</span>
+<span class="fc" id="L146">        return branchName;</span>
     }
 
     /**
@@ -144,11 +153,11 @@ public class GitUri {
      * @return Git repository URI
      */
     public String getGitRepositoryUri() {
-<span class="fc" id="L147">        return gitRepositoryUri;</span>
+<span class="fc" id="L156">        return gitRepositoryUri;</span>
     }
 
     public String getResource() {
-<span class="fc" id="L151">        return resource;</span>
+<span class="fc" id="L160">        return resource;</span>
     }
 
     /**
@@ -164,37 +173,37 @@ public class GitUri {
         // TODO clean this up so it is less &quot;hacky&quot;
         final String decodedFragment;
         try {
-<span class="fc" id="L167">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
-<span class="nc" id="L168">        } catch (final UnsupportedEncodingException e) {</span>
+<span class="fc" id="L176">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L177">        } catch (final UnsupportedEncodingException e) {</span>
             // should not happen.
-<span class="nc" id="L170">            throw new IllegalStateException(e);</span>
-<span class="fc" id="L171">        }</span>
+<span class="nc" id="L179">            throw new IllegalStateException(e);</span>
+<span class="fc" id="L180">        }</span>
         final URI combined;
-<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (resource != null) {</span>
-<span class="fc" id="L174">            combined = URI.create(gitRepositoryUri</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (resource != null) {</span>
+<span class="fc" id="L183">            combined = URI.create(gitRepositoryUri</span>
                     + resource.replace(&quot;##&quot;, &quot;#&quot;));
         } else {
-<span class="fc" id="L177">            combined = URI.create(gitRepositoryUri);</span>
+<span class="fc" id="L186">            combined = URI.create(gitRepositoryUri);</span>
         }
-<span class="fc" id="L179">        final String slashAppendedUri = combined.toASCIIString();</span>
-<span class="fc" id="L180">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
+<span class="fc" id="L188">        final String slashAppendedUri = combined.toASCIIString();</span>
+<span class="fc" id="L189">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
                 decodedFragment.replace(&quot; &quot;, &quot;%2520&quot;));
-<span class="fc" id="L182">        final StringBuilder resolved = new StringBuilder(</span>
+<span class="fc" id="L191">        final StringBuilder resolved = new StringBuilder(</span>
                 resolvedUri.toASCIIString());
 
-<span class="fc" id="L185">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
-<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
-<span class="fc" id="L187">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
+<span class="fc" id="L194">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
+<span class="fc" id="L196">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
                     branchName, decodedFragment.replace(&quot; &quot;, &quot;%20&quot;))));
         }
-<span class="fc" id="L190">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
-<span class="fc" id="L191">        final int lastRelevantHash = resolved.indexOf(&quot;#&quot;, lastQuestionMark);</span>
+<span class="fc" id="L199">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
+<span class="fc" id="L200">        final int lastRelevantHash = resolved.indexOf(&quot;#&quot;, lastQuestionMark);</span>
 
-<span class="pc bpc" id="L193" title="3 of 4 branches missed.">        if (lastRelevantSlash &gt; 0 &amp;&amp; lastRelevantHash &gt;= lastRelevantSlash) {</span>
-<span class="nc" id="L194">            resolved.insert(lastRelevantSlash, '#');</span>
+<span class="pc bpc" id="L202" title="3 of 4 branches missed.">        if (lastRelevantSlash &gt; 0 &amp;&amp; lastRelevantHash &gt;= lastRelevantSlash) {</span>
+<span class="nc" id="L203">            resolved.insert(lastRelevantSlash, '#');</span>
         }
 
-<span class="fc" id="L197">        return new GitUri(URI.create(resolved.toString()));</span>
+<span class="fc" id="L206">        return new GitUri(URI.create(resolved.toString()));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

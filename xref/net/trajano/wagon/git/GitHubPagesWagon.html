@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment"> * Github Pages Wagon.</em>
 <a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="40" href="#40">40</a>  @Component(role = Wagon.<strong class="jxr_keyword">class</strong>, hint = <span class="jxr_string">"githubpages"</span>, instantiationStrategy = <span class="jxr_string">"per-lookup"</span>)
+<a class="jxr_linenumber" name="40" href="#40">40</a>  @Component(role = Wagon.<strong class="jxr_keyword">class</strong>, hint = <span class="jxr_string">"github"</span>, instantiationStrategy = <span class="jxr_string">"per-lookup"</span>)
 <a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/trajano/wagon/git/GitHubPagesWagon.html">GitHubPagesWagon</a> <strong class="jxr_keyword">extends</strong> StreamWagon {
 <a class="jxr_linenumber" name="42" href="#42">42</a>  
 <a class="jxr_linenumber" name="43" href="#43">43</a>      <em class="jxr_javadoccomment">/**</em>
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="88" href="#88">88</a>                  git.add().addFilepattern(<span class="jxr_string">"."</span>).call(); <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="89" href="#89">89</a>                  git.commit().setMessage(R.getString(<span class="jxr_string">"commitmessage"</span>)).call(); <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="90" href="#90">90</a>                  git.push().setRemote(gitRemoteUri)
-<a class="jxr_linenumber" name="91" href="#91">91</a>                  .setCredentialsProvider(credentialsProvider).call();
+<a class="jxr_linenumber" name="91" href="#91">91</a>                          .setCredentialsProvider(credentialsProvider).call();
 <a class="jxr_linenumber" name="92" href="#92">92</a>                  git.close();
 <a class="jxr_linenumber" name="93" href="#93">93</a>                  FileUtils.deleteDirectory(git.getRepository().getDirectory());
 <a class="jxr_linenumber" name="94" href="#94">94</a>              }
@@ -242,7 +242,7 @@
 <a class="jxr_linenumber" name="232" href="#232">232</a> <em class="jxr_javadoccomment">     * @throws URISyntaxException</em>
 <a class="jxr_linenumber" name="233" href="#233">233</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="234" href="#234">234</a>     <strong class="jxr_keyword">private</strong> Git getGit(<strong class="jxr_keyword">final</strong> String gitRepositoryUri) <strong class="jxr_keyword">throws</strong> GitAPIException,
-<a class="jxr_linenumber" name="235" href="#235">235</a>     IOException, URISyntaxException {
+<a class="jxr_linenumber" name="235" href="#235">235</a>             IOException, URISyntaxException {
 <a class="jxr_linenumber" name="236" href="#236">236</a>         <strong class="jxr_keyword">final</strong> Git cachedGit = gitCache.get(gitRepositoryUri);
 <a class="jxr_linenumber" name="237" href="#237">237</a>         <strong class="jxr_keyword">if</strong> (cachedGit != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="238" href="#238">238</a>             <strong class="jxr_keyword">return</strong> cachedGit;
@@ -280,7 +280,7 @@
 <a class="jxr_linenumber" name="270" href="#270">270</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="271" href="#271">271</a>     @Override
 <a class="jxr_linenumber" name="272" href="#272">272</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> openConnectionInternal() <strong class="jxr_keyword">throws</strong> ConnectionException,
-<a class="jxr_linenumber" name="273" href="#273">273</a>     AuthenticationException {
+<a class="jxr_linenumber" name="273" href="#273">273</a>             AuthenticationException {
 <a class="jxr_linenumber" name="274" href="#274">274</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="275" href="#275">275</a>             gitUri = GitUri.buildFromGithubPages(getRepository().getUrl());
 <a class="jxr_linenumber" name="276" href="#276">276</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> TextParseException e) {

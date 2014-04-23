@@ -37,7 +37,7 @@ import org.xbill.DNS.TextParseException;
 /**
  * Github Pages Wagon.
  */
-@Component(role = Wagon.class, hint = &quot;githubpages&quot;, instantiationStrategy = &quot;per-lookup&quot;)
+@Component(role = Wagon.class, hint = &quot;github&quot;, instantiationStrategy = &quot;per-lookup&quot;)
 <span class="nc" id="L41">public class GitHubPagesWagon extends StreamWagon {</span>
 
     /**
@@ -88,7 +88,7 @@ import org.xbill.DNS.TextParseException;
 <span class="nc" id="L88">                git.add().addFilepattern(&quot;.&quot;).call(); //$NON-NLS-1$</span>
 <span class="nc" id="L89">                git.commit().setMessage(R.getString(&quot;commitmessage&quot;)).call(); //$NON-NLS-1$</span>
 <span class="nc" id="L90">                git.push().setRemote(gitRemoteUri)</span>
-                .setCredentialsProvider(credentialsProvider).call();
+                        .setCredentialsProvider(credentialsProvider).call();
 <span class="nc" id="L92">                git.close();</span>
 <span class="nc" id="L93">                FileUtils.deleteDirectory(git.getRepository().getDirectory());</span>
 <span class="nc" id="L94">            }</span>
@@ -232,7 +232,7 @@ import org.xbill.DNS.TextParseException;
      * @throws URISyntaxException
      */
     private Git getGit(final String gitRepositoryUri) throws GitAPIException,
-    IOException, URISyntaxException {
+            IOException, URISyntaxException {
 <span class="nc" id="L236">        final Git cachedGit = gitCache.get(gitRepositoryUri);</span>
 <span class="nc bnc" id="L237" title="All 2 branches missed.">        if (cachedGit != null) {</span>
 <span class="nc" id="L238">            return cachedGit;</span>
@@ -270,7 +270,7 @@ import org.xbill.DNS.TextParseException;
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
-    AuthenticationException {
+            AuthenticationException {
         try {
 <span class="nc" id="L275">            gitUri = GitUri.buildFromGithubPages(getRepository().getUrl());</span>
 <span class="nc" id="L276">        } catch (final TextParseException e) {</span>

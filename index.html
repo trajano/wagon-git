@@ -65,7 +65,7 @@
         &lt;dependency&gt;
             &lt;groupId&gt;net.trajano.wagon&lt;/groupId&gt;
             &lt;artifactId&gt;wagon-git&lt;/artifactId&gt;
-            &lt;version&gt;${project.version}&lt;/version&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
 &lt;/plugin&gt;
@@ -109,19 +109,19 @@
 <pre>&lt;menu ref=&quot;parent&quot; inherit=&quot;top&quot; /&gt;
 &lt;menu ref=&quot;modules&quot; inherit=&quot;top&quot; /&gt;
 </pre></div>
-<p>The problem is a broken implementation of the path logic done by the <a class="externalLink" href="http://maven.apache.org/shared/maven-doxia-tools/">doxia-integation-tools</a> from Maven. A bug and patch has been provided by <a class="externalLink" href="http://www.trajano.net/">Archimedes Trajano</a> <a class="externalLink" href="http://jira.codehaus.org/browse/MSITE-709">MSITE-709</a> to resolve the issue. For those that need the fix immediately, an <a class="externalLink" href="http://site.trajano.net/maven-doxia-tools/doxia-integration-tools/">alternative doxia-integration-tools</a> has been made available and can be added as a dependency to the site plugin or as a build extension.</p>
+<p>The problem is a broken implementation of the path logic done by the <a class="externalLink" href="http://maven.apache.org/shared/maven-doxia-tools/">doxia-integation-tools</a> from Maven. A bug and patch has been provided by <a class="externalLink" href="http://www.trajano.net/">Archimedes Trajano</a> called <a class="externalLink" href="http://jira.codehaus.org/browse/MSITE-709">MSITE-709</a> to resolve the issue. For those that need the fix immediately, an <a class="externalLink" href="http://site.trajano.net/maven-doxia-tools/doxia-integration-tools/">alternative doxia-integration-tools</a> has been made available and can be added as a dependency to the site plugin or as a build extension.</p>
 
 <div class="source">
-<pre> &lt;plugin&gt;
-     &lt;artifactId&gt;maven-site-plugin&lt;/artifactId&gt;
-     &lt;dependencies&gt;
-         &lt;dependency&gt;
-             &lt;groupId&gt;net.trajano.maven.doxia&lt;/groupId&gt;
-             &lt;artifactId&gt;doxia-integration-tools&lt;/artifactId&gt;
-             &lt;version&gt;2.0.0&lt;/version&gt;
-         &lt;/dependency&gt;
-     &lt;/dependencies&gt;
- &lt;/plugin&gt;
+<pre>&lt;plugin&gt;
+    &lt;artifactId&gt;maven-site-plugin&lt;/artifactId&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.trajano.maven.doxia&lt;/groupId&gt;
+            &lt;artifactId&gt;doxia-integration-tools&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;
 </pre></div></div>
 	      </div>
 	    </article>

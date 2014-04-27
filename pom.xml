@@ -23,9 +23,6 @@
             <url>git:ssh://git@github.com/trajano/${project.artifactId}.git?gh-pages#</url>
         </site>
     </distributionManagement>
-    <properties>
-        <coding-standards.version>1.1.2</coding-standards.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>dnsjava</groupId>
@@ -66,13 +63,6 @@
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>2.10</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>net.trajano</groupId>
-                            <artifactId>coding-standards</artifactId>
-                            <version>${coding-standards.version}</version>
-                        </dependency>
-                    </dependencies>
                     <configuration>
                         <configLocation>config/checkstyle-configuration.xml</configLocation>
                     </configuration>
@@ -152,13 +142,6 @@
                 <plugin>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>3.0.1</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>net.trajano</groupId>
-                            <artifactId>coding-standards</artifactId>
-                            <version>${coding-standards.version}</version>
-                        </dependency>
-                    </dependencies>
                     <configuration>
                         <rulesets>
                             <ruleset>/config/pmd-rules.xml</ruleset>
@@ -168,21 +151,6 @@
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.6</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <dependencies>
-                        <dependency>
-                            <groupId>net.trajano</groupId>
-                            <artifactId>coding-standards</artifactId>
-                            <version>${coding-standards.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>net.trajano.wagon</groupId>
-                            <artifactId>wagon-git</artifactId>
-                            <version>1.0.1-SNAPSHOT</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
@@ -215,13 +183,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
                     <version>2.5.3</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>net.trajano</groupId>
-                            <artifactId>coding-standards</artifactId>
-                            <version>${coding-standards.version}</version>
-                        </dependency>
-                    </dependencies>
                     <configuration>
                         <excludeFilterFile>config/findbugs-exclude-filter.xml</excludeFilterFile>
                     </configuration>
@@ -280,7 +241,7 @@
             <extension>
                 <groupId>net.trajano</groupId>
                 <artifactId>coding-standards</artifactId>
-                <version>${coding-standards.version}</version>
+                <version>1.1.2</version>
             </extension>
         </extensions>
     </build>
@@ -366,34 +327,6 @@
                 </property>
             </activation>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.eclipse.m2e</groupId>
-                            <artifactId>lifecycle-mapping</artifactId>
-                            <version>1.0.0</version>
-                            <configuration>
-                                <lifecycleMappingMetadata>
-                                    <pluginExecutions>
-                                        <pluginExecution>
-                                            <pluginExecutionFilter>
-                                                <groupId>com.despegar.maven.plugin</groupId>
-                                                <artifactId>maven-m2e-codestyle</artifactId>
-                                                <versionRange>[1.0.4,)</versionRange>
-                                                <goals>
-                                                    <goal>configure</goal>
-                                                </goals>
-                                            </pluginExecutionFilter>
-                                            <action>
-                                                <execute/>
-                                            </action>
-                                        </pluginExecution>
-                                    </pluginExecutions>
-                                </lifecycleMappingMetadata>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
                 <plugins>
                     <plugin>
                         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -420,16 +353,16 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>com.despegar.maven.plugin</groupId>
-                        <artifactId>maven-m2e-codestyle</artifactId>
-                        <version>1.0.4</version>
+                        <groupId>net.trajano.mojo</groupId>
+                        <artifactId>m2e-codestyle-maven-plugin</artifactId>
+                        <version>1.1.0</version>
                         <executions>
                             <execution>
                                 <goals>
                                     <goal>configure</goal>
                                 </goals>
                                 <configuration>
-                                    <codeStyleBaseUrl>http://site.trajano.net/coding-standards/codestyle/</codeStyleBaseUrl>
+                                    <codeStyleBaseUrl>codestyle</codeStyleBaseUrl>
                                 </configuration>
                             </execution>
                         </executions>

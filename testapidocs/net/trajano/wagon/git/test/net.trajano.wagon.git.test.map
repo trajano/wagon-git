@@ -1,12 +1,12 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="16,17,119,42"/>
-<area shape="rect" id="node1" href="./GitWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="5,5,129,53"/>
-<area shape="rect" id="node2_1" href="./GitWagonExceptionTest.html" title="net.trajano.wagon.git.test.GitWagonExceptionTest" alt="" coords="165,17,325,42"/>
-<area shape="rect" id="node2" href="./GitWagonExceptionTest.html" title="&lt;TABLE&gt;" alt="" coords="154,5,335,53"/>
-<area shape="rect" id="node3_2" href="./GitUriTest.html" title="net.trajano.wagon.git.test.GitUriTest" alt="" coords="370,17,447,42"/>
-<area shape="rect" id="node3" href="./GitUriTest.html" title="&lt;TABLE&gt;" alt="" coords="359,5,458,53"/>
-<area shape="rect" id="node4_3" href="./GitHubPagesWagonTest.html" title="net.trajano.wagon.git.test.GitHubPagesWagonTest" alt="" coords="493,17,655,42"/>
-<area shape="rect" id="node4" href="./GitHubPagesWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="482,5,666,53"/>
-<area shape="rect" id="node5_4" href="./DnsLookupTest.html" title="net.trajano.wagon.git.test.DnsLookupTest" alt="" coords="701,17,810,42"/>
-<area shape="rect" id="node5" href="./DnsLookupTest.html" title="&lt;TABLE&gt;" alt="" coords="690,5,821,53"/>
+<area shape="rect" id="node1_0" href="./GitUriTest.html" title="net.trajano.wagon.git.test.GitUriTest" alt="" coords="15,16,97,43"/>
+<area shape="rect" id="node1" href="./GitUriTest.html" title="&lt;TABLE&gt;" alt="" coords="5,5,107,53"/>
+<area shape="rect" id="node2_1" href="./GitWagonTest.html" title="net.trajano.wagon.git.test.GitWagonTest" alt="" coords="142,16,247,43"/>
+<area shape="rect" id="node2" href="./GitWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="131,5,258,53"/>
+<area shape="rect" id="node3_2" href="./GitWagonExceptionTest.html" title="net.trajano.wagon.git.test.GitWagonExceptionTest" alt="" coords="293,16,456,43"/>
+<area shape="rect" id="node3" href="./GitWagonExceptionTest.html" title="&lt;TABLE&gt;" alt="" coords="283,5,467,53"/>
+<area shape="rect" id="node4_3" href="./DnsLookupTest.html" title="net.trajano.wagon.git.test.DnsLookupTest" alt="" coords="502,16,615,43"/>
+<area shape="rect" id="node4" href="./DnsLookupTest.html" title="&lt;TABLE&gt;" alt="" coords="491,5,626,53"/>
+<area shape="rect" id="node5_4" href="./GitHubPagesWagonTest.html" title="net.trajano.wagon.git.test.GitHubPagesWagonTest" alt="" coords="661,16,827,43"/>
+<area shape="rect" id="node5" href="./GitHubPagesWagonTest.html" title="&lt;TABLE&gt;" alt="" coords="651,5,837,53"/>
 </map>

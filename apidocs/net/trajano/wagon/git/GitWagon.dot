@@ -5,8 +5,8 @@
 #
 
 digraph G {
-	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
-	node [fontname="arial",fontsize=10,shape=plaintext];
+	edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
+	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.wagon.git.GitWagon
@@ -14,14 +14,14 @@ digraph G {
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GitWagon </td></tr>
 		</table></td></tr>
-		</table>>, URL="./GitWagon.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./GitWagon.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.wagon.git.internal.AbstractGitWagon
-	c39 [label=<<table title="net.trajano.wagon.git.internal.AbstractGitWagon" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./internal/AbstractGitWagon.html">
+	c38 [label=<<table title="net.trajano.wagon.git.internal.AbstractGitWagon" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./internal/AbstractGitWagon.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="arial italic"> AbstractGitWagon </font></td></tr>
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractGitWagon </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="./internal/AbstractGitWagon.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./internal/AbstractGitWagon.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.wagon.git.GitWagon extends net.trajano.wagon.git.internal.AbstractGitWagon
-	c39:p -> c35:p [dir=back,arrowtail=empty];
+	c38:p -> c35:p [dir=back,arrowtail=empty];
 }
 

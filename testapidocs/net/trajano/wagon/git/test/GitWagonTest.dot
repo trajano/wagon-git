@@ -10,15 +10,15 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.wagon.git.test.GitWagonTest
-	c34 [label=<<table title="net.trajano.wagon.git.test.GitWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./GitWagonTest.html">
+	c41 [label=<<table title="net.trajano.wagon.git.test.GitWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./GitWagonTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GitWagonTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./GitWagonTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.wagon.git.test.GitWagonTest extends org.apache.maven.wagon.StreamingWagonTestCase
-	c38:p -> c34:p [dir=back,arrowtail=empty];
+	c45:p -> c41:p [dir=back,arrowtail=empty];
 	// org.apache.maven.wagon.StreamingWagonTestCase
-	c38 [label=<<table title="org.apache.maven.wagon.StreamingWagonTestCase" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/wagon/StreamingWagonTestCase.html">
+	c45 [label=<<table title="org.apache.maven.wagon.StreamingWagonTestCase" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/wagon/StreamingWagonTestCase.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Helvetica-Oblique"> StreamingWagonTestCase </font></td></tr>
 		</table></td></tr>

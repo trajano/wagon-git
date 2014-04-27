@@ -15,7 +15,7 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
 
     /**
      * Constructs the provider using a given passphrase.
-     * 
+     *
      * @param passphrase
      *            passphrase
      */
@@ -39,22 +39,29 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @return <code>true</code>
+     * This provider does not interact with the user, it pulls directly from the
+     * value that was set in the constructor.
+     *
+     * @return <code>false</code>
      */
     @Override
     public boolean isInteractive() {
-        return true;
+        return false;
     }
 
     /**
      * {@inheritDoc}
-     * 
-     * @return <code>true</code>
+     *
+     * @return <code>true</code> when items contains a
+     *         {@link CredentialItem.StringType}
      */
     @Override
     public boolean supports(final CredentialItem... items) {
-        return true;
+        for (final CredentialItem item : items) {
+            if (item instanceof CredentialItem.StringType) {
+                return true;
+            }
+        }
+        return false;
     }
 }

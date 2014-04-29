@@ -5,8 +5,8 @@
 #
 
 digraph G {
-	edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
-	node [fontname="Helvetica",fontsize=10,shape=plaintext];
+	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
+	node [fontname="arial",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.wagon.git.test.PassphraseCredentialsProviderTest
@@ -14,36 +14,36 @@ digraph G {
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> PassphraseCredentialsProviderTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./PassphraseCredentialsProviderTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// net.trajano.wagon.git.test.GitUriTest
-	c1 [label=<<table title="net.trajano.wagon.git.test.GitUriTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitUriTest.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> GitUriTest </td></tr>
-		</table></td></tr>
-		</table>>, URL="./GitUriTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./PassphraseCredentialsProviderTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.trajano.wagon.git.test.GitWagonTest
-	c2 [label=<<table title="net.trajano.wagon.git.test.GitWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitWagonTest.html">
+	c1 [label=<<table title="net.trajano.wagon.git.test.GitWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitWagonTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GitWagonTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./GitWagonTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./GitWagonTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.trajano.wagon.git.test.GitWagonExceptionTest
-	c3 [label=<<table title="net.trajano.wagon.git.test.GitWagonExceptionTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitWagonExceptionTest.html">
+	c2 [label=<<table title="net.trajano.wagon.git.test.GitWagonExceptionTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitWagonExceptionTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GitWagonExceptionTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./GitWagonExceptionTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// net.trajano.wagon.git.test.DnsLookupTest
-	c4 [label=<<table title="net.trajano.wagon.git.test.DnsLookupTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DnsLookupTest.html">
+		</table>>, URL="./GitWagonExceptionTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.trajano.wagon.git.test.GitUriTest
+	c3 [label=<<table title="net.trajano.wagon.git.test.GitUriTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitUriTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> DnsLookupTest </td></tr>
+<tr><td align="center" balign="center"> GitUriTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./DnsLookupTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./GitUriTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.trajano.wagon.git.test.GitHubPagesWagonTest
-	c5 [label=<<table title="net.trajano.wagon.git.test.GitHubPagesWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitHubPagesWagonTest.html">
+	c4 [label=<<table title="net.trajano.wagon.git.test.GitHubPagesWagonTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GitHubPagesWagonTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GitHubPagesWagonTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./GitHubPagesWagonTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./GitHubPagesWagonTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.trajano.wagon.git.test.DnsLookupTest
+	c5 [label=<<table title="net.trajano.wagon.git.test.DnsLookupTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DnsLookupTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> DnsLookupTest </td></tr>
+		</table></td></tr>
+		</table>>, URL="./DnsLookupTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 }
 

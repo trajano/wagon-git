@@ -3,7 +3,7 @@
 <rss version="0.91">
   <channel>
     <title>Git Wagon Provider - Checkstyle report</title>
-    <link>http://site.trajano.net/wagon-git/wagon-git/</link>
+    <link>http://site.trajano.net/trajano/wagon-git/</link>
     <description>Git Wagon Provider - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2012 - 2014 Trajano</copyright>
@@ -13,9 +13,9 @@
              Warnings: 0,
              Infos: 0
       </title>
-            <link>http://site.trajano.net/wagon-git/wagon-git//checkstyle.html</link>
+            <link>http://site.trajano.net/trajano/wagon-git//checkstyle.html</link>
       <description>
-        <p>Click <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -29,7 +29,7 @@
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.GitWagon.java">net/trajano/wagon/git/GitWagon.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.GitWagon.java">net/trajano/wagon/git/GitWagon.java</a>
                 </td>
                 <td>
                   0
@@ -43,7 +43,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.GitHubPagesWagon.java">net/trajano/wagon/git/GitHubPagesWagon.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.GitHubPagesWagon.java">net/trajano/wagon/git/GitHubPagesWagon.java</a>
                 </td>
                 <td>
                   0
@@ -57,7 +57,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.AbstractGitWagon.java">net/trajano/wagon/git/internal/AbstractGitWagon.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.AbstractGitWagon.java">net/trajano/wagon/git/internal/AbstractGitWagon.java</a>
                 </td>
                 <td>
                   0
@@ -71,7 +71,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.package-info.java">net/trajano/wagon/git/internal/package-info.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.package-info.java">net/trajano/wagon/git/internal/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -85,7 +85,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#META-INF.Messages.properties">META-INF/Messages.properties</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#META-INF.Messages.properties">META-INF/Messages.properties</a>
                 </td>
                 <td>
                   0
@@ -99,7 +99,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.GitUri.java">net/trajano/wagon/git/internal/GitUri.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.GitUri.java">net/trajano/wagon/git/internal/GitUri.java</a>
                 </td>
                 <td>
                   0
@@ -113,7 +113,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.package-info.java">net/trajano/wagon/git/package-info.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.package-info.java">net/trajano/wagon/git/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -127,7 +127,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.PassphraseCredentialsProvider.java">net/trajano/wagon/git/internal/PassphraseCredentialsProvider.java</a>
+                  <a href="http://site.trajano.net/trajano/wagon-git//checkstyle.html#net.trajano.wagon.git.internal.PassphraseCredentialsProvider.java">net/trajano/wagon/git/internal/PassphraseCredentialsProvider.java</a>
                 </td>
                 <td>
                   0

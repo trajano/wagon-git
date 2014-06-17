@@ -14,9 +14,9 @@ import org.junit.Test;
 
 /**
  * Tests exception scenarios.
- * 
+ *
  * @author Archimedes
- * 
+ *
  */
 public class GitWagonExceptionTest {
     /**
@@ -39,6 +39,21 @@ public class GitWagonExceptionTest {
         gitRemoteDirectory2 = File.createTempFile("remote", null);
         gitRemoteDirectory2.delete();
         Git.init().setDirectory(gitRemoteDirectory2).call();
+    }
+
+    @Test(expected = TransferFailedException.class)
+    public void testPutOutside() throws Exception {
+        final GitWagon gitWagon = new GitWagon();
+        gitWagon.connect(new Repository("gh", "git:"
+                + gitRemoteDirectory1.toURI() + "?ghPages#"));
+        final File tempDir = File.createTempFile("temp", null);
+        tempDir.delete();
+        tempDir.mkdir();
+        new FileOutputStream(new File(tempDir, "foo")).close();
+        new FileOutputStream(new File(tempDir, "bar")).close();
+        new FileOutputStream(new File(tempDir, "one")).close();
+        gitWagon.putDirectory(tempDir, "../");
+        FileUtils.deleteDirectory(tempDir);
     }
 
     @Test

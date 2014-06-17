@@ -5,14 +5,12 @@ import java.io.IOException;
 import net.trajano.wagon.git.GitWagon;
 
 import org.apache.maven.wagon.StreamingWagonTestCase;
-import org.junit.Ignore;
 
 /**
  * Tests {@link GitWagon}. Note this test is ignored as it is specific to the
  * author. However, GitHubPagesWagon and GitWagon share most of their code
  * except the GitUri building logic.
  */
-@Ignore
 public class GitHubPagesWagonTest extends StreamingWagonTestCase {
 
     /**
@@ -41,7 +39,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected String getTestRepositoryUrl() throws IOException {
-        return "github:http://site.trajano.net/ZaWorld";
+        return "github:http://site.trajano.net/ZaWorld/";
     }
 
     /**

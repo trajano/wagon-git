@@ -52,8 +52,8 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
     /**
      * {@inheritDoc}
      *
-     * @return <code>true</code> when items contains a
-     *         {@link CredentialItem.StringType}
+     * @return <code>true</code> when items contains a {@link CredentialItem}
+     *         .StringType
      */
     @Override
     public boolean supports(final CredentialItem... items) {

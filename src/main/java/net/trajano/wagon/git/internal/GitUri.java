@@ -6,13 +6,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Git URI. This provides the logic to extract the components from a URI. The
  * URI string is in the form
  * <code>git:gitSpecificUri?branchName#relativeDirectory</code>.
  */
 public class GitUri {
-
     /**
      * Branch name.
      */
@@ -58,6 +61,23 @@ public class GitUri {
         resource = gitUri.getFragment();
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        final GitUri x = (GitUri) obj;
+        return new EqualsBuilder().append(branchName, x.branchName)
+                .append(gitRepositoryUri, x.gitRepositoryUri)
+                .append(resource, x.resource).build();
+    }
+
     /**
      * Branch name.
      *
@@ -79,6 +99,12 @@ public class GitUri {
 
     public String getResource() {
         return resource;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(resource).append(branchName)
+                .append(gitRepositoryUri).build();
     }
 
     /**
@@ -125,5 +151,11 @@ public class GitUri {
         }
 
         return new GitUri(URI.create(resolved.toString()));
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append(gitRepositoryUri)
+                .append(branchName).append(resource).build();
     }
 }

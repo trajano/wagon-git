@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,8 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.errors.NoRemoteRepositoryException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -78,13 +81,11 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @param repositoryUrl
      *            repository URL
      * @return Git URI
-     * @throws ConnectionException
-     *             problem when connecting
-     * @throws AuthenticationException
-     *             problem with authentication
+     * @throws IOException
+     * @throws URISyntaxException
      */
-    public abstract GitUri buildGitUri(String repositoryUrl)
-            throws ConnectionException, AuthenticationException;
+    public abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
+    URISyntaxException;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -99,7 +100,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                 git.add().addFilepattern(".").call(); //$NON-NLS-1$
                 git.commit().setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
                 git.push().setRemote(gitRemoteUri)
-                .setCredentialsProvider(credentialsProvider).call();
+                        .setCredentialsProvider(credentialsProvider).call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository().getDirectory());
             }
@@ -182,16 +183,10 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws GitAPIException
      *             problem with the GIT API.
      * @throws URISyntaxException
+     * @throws ResourceDoesNotExistException
      */
-    private File getFileForResource(final String resourceName)
-            throws GitAPIException, IOException, URISyntaxException {
-        // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
-        // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
-        final GitUri resolved = gitUri.resolve(resourceName);
-        final Git resourceGit = getGit(resolved.getGitRepositoryUri());
-        return new File(resourceGit.getRepository().getWorkTree(),
-                resolved.getResource());
-    }
+    protected abstract File getFileForResource(String resourceName)
+            throws GitAPIException, IOException, URISyntaxException;
 
     /**
      * {@inheritDoc}
@@ -241,10 +236,12 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws GitAPIException
      * @throws IOException
      * @throws URISyntaxException
+     * @thorws ResourceDoesNotExistException remote repository does not exist.
      */
-    private Git getGit(final String gitRepositoryUri) throws GitAPIException,
-    IOException, URISyntaxException {
+    protected Git getGit(final String gitRepositoryUri) throws GitAPIException,
+            IOException, URISyntaxException, ResourceDoesNotExistException {
         final Git cachedGit = gitCache.get(gitRepositoryUri);
+        LOG.fine("Loading " + gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;
         }
@@ -262,18 +259,29 @@ public abstract class AbstractGitWagon extends StreamWagon {
             credentialsProvider = new PassphraseCredentialsProvider(
                     getAuthenticationInfo().getPassword());
         }
-        final Git git = Git.cloneRepository().setURI(gitRepositoryUri)
-                .setCredentialsProvider(credentialsProvider)
-                .setBranch(gitUri.getBranchName()).setDirectory(gitDir).call();
-        if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
-            LOG.log(Level.INFO, "missingbranch", gitUri.getBranchName());
-            final RefUpdate refUpdate = git.getRepository().getRefDatabase()
-                    .newUpdate(Constants.HEAD, true);
-            refUpdate.setForceUpdate(true);
-            refUpdate.link("refs/heads/" + gitUri.getBranchName()); //$NON-NLS-1$
+        try {
+            final Git git = Git.cloneRepository().setURI(gitRepositoryUri)
+                    .setCredentialsProvider(credentialsProvider)
+                    .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
+                    .call();
+            if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {
+                LOG.log(Level.INFO, "missingbranch", gitUri.getBranchName());
+                final RefUpdate refUpdate = git.getRepository()
+                        .getRefDatabase().newUpdate(Constants.HEAD, true);
+                refUpdate.setForceUpdate(true);
+                refUpdate.link("refs/heads/" + gitUri.getBranchName()); //$NON-NLS-1$
+            }
+            gitCache.put(gitRepositoryUri, git);
+            return git;
+        } catch (final InvalidRemoteException e) {
+            throw new ResourceDoesNotExistException(e.getMessage(), e);
+        } catch (final NoRemoteRepositoryException e) {
+            throw new ResourceDoesNotExistException(e.getMessage(), e);
         }
-        gitCache.put(gitRepositoryUri, git);
-        return git;
+    }
+
+    protected GitUri getGitUri() {
+        return gitUri;
     }
 
     /**
@@ -282,7 +290,17 @@ public abstract class AbstractGitWagon extends StreamWagon {
     @Override
     protected void openConnectionInternal() throws ConnectionException,
     AuthenticationException {
-        gitUri = buildGitUri(getRepository().getUrl());
+        URI uri;
+        try {
+            uri = new URI(
+                    new URI(getRepository().getUrl().replace("##", "#"))
+                    .getSchemeSpecificPart()).normalize();
+            gitUri = buildGitUri(uri);
+        } catch (final URISyntaxException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ConnectionException(e.getMessage(), e);
+        }
     }
 
     /**

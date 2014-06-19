@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GitHubPagesWagon.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Git Wagon Provider</a> &gt; <a href="index.source.html" class="el_package">net.trajano.wagon.git</a> &gt; <span class="el_source">GitHubPagesWagon.java</span></div><h1>GitHubPagesWagon.java</h1><pre class="source lang-java linenums">package net.trajano.wagon.git;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +14,11 @@ import java.util.regex.Pattern;
 import net.trajano.wagon.git.internal.AbstractGitWagon;
 import net.trajano.wagon.git.internal.GitUri;
 
-import org.apache.maven.wagon.ConnectionException;
+import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.Wagon;
-import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.codehaus.plexus.component.annotations.Component;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.TextParseException;
@@ -23,19 +28,19 @@ import org.xbill.DNS.Type;
  * Github Pages Wagon.
  */
 @Component(role = Wagon.class, hint = &quot;github&quot;, instantiationStrategy = &quot;per-lookup&quot;)
-<span class="fc" id="L26">public class GitHubPagesWagon extends AbstractGitWagon {</span>
+<span class="fc" id="L31">public class GitHubPagesWagon extends AbstractGitWagon {</span>
 
     /**
      * Github pages host pattern.
      */
-<span class="fc" id="L31">    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern</span>
-            .compile(&quot;([a-z]+)\\.github\\.io.?&quot;);
+<span class="fc" id="L36">    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern</span>
+<span class="fc" id="L37">            .compile(&quot;([a-z]+)\\.github\\.io.?&quot;);</span>
 
     /**
      * Github pages path pattern.
      */
-<span class="fc" id="L37">    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern</span>
-            .compile(&quot;/([^/]+)(/.*)?&quot;);
+<span class="fc" id="L42">    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern</span>
+<span class="fc" id="L43">            .compile(&quot;/([^/]+)(/.*)?&quot;);</span>
 
     /**
      * Logger.
@@ -53,9 +58,9 @@ import org.xbill.DNS.Type;
     private static final ResourceBundle R;
 
     static {
-<span class="fc" id="L56">        LOG = Logger.getLogger(&quot;net.trajano.wagon.git&quot;, MESSAGES);</span>
-<span class="fc" id="L57">        R = ResourceBundle.getBundle(MESSAGES);</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L61">        LOG = Logger.getLogger(&quot;net.trajano.wagon.git&quot;, MESSAGES);</span>
+<span class="fc" id="L62">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="fc" id="L63">    }</span>
 
     /**
      * Builds a GitUri from a GitHub Pages URL. It performs a DNS lookup for the
@@ -63,34 +68,68 @@ import org.xbill.DNS.Type;
      * {@inheritDoc}
      */
     @Override
-    public GitUri buildGitUri(final String repositoryUrl)
-            throws ConnectionException, AuthenticationException {
-        try {
-<span class="fc" id="L69">            final URI uri = URI.create(</span>
-                    URI.create(repositoryUrl).getSchemeSpecificPart())
-                    .normalize();
-<span class="fc" id="L72">            final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(uri.getHost());</span>
-            final String username;
-<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (m.matches()) {</span>
-<span class="fc" id="L75">                username = m.group(1);</span>
-            } else {
-<span class="fc" id="L77">                final String cnameHost = getCnameForHost(uri.getHost());</span>
-<span class="fc" id="L78">                final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                if (!m2.matches()) {</span>
-<span class="nc" id="L80">                    throw new RuntimeException(String.format(</span>
-                            R.getString(&quot;invalidGitHubPagesHost&quot;),
-                            repositoryUrl));
-                }
-<span class="fc" id="L84">                username = m2.group(1);</span>
-            }
-<span class="fc" id="L86">            final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(uri</span>
-                    .getPath());
-<span class="fc" id="L88">            pathMatcher.matches();</span>
-<span class="fc" id="L89">            return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
-                    + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, &quot;&quot;);
-<span class="nc" id="L91">        } catch (final TextParseException e) {</span>
-<span class="nc" id="L92">            throw new ConnectionException(e.getMessage());</span>
+    public GitUri buildGitUri(final URI uri) throws IOException,
+            URISyntaxException {
+        final URI finalUri;
+        // Resolve redirects if needed.
+<span class="pc bpc" id="L75" title="3 of 4 branches missed.">        if (&quot;http&quot;.equals(uri.getScheme()) || &quot;https&quot;.equals(uri.getScheme())) {</span>
+<span class="fc" id="L76">            final HttpURLConnection urlConnection = (HttpURLConnection) uri</span>
+<span class="fc" id="L77">                    .toURL().openConnection();</span>
+<span class="fc" id="L78">            urlConnection.connect();</span>
+<span class="fc" id="L79">            urlConnection.getResponseCode();</span>
+<span class="fc" id="L80">            finalUri = urlConnection.getURL().toURI();</span>
+<span class="fc" id="L81">            urlConnection.disconnect();</span>
+<span class="fc" id="L82">        } else {</span>
+<span class="nc" id="L83">            finalUri = uri;</span>
         }
+<span class="fc" id="L85">        final Matcher m = GITHUB_PAGES_HOST_PATTERN.matcher(finalUri.getHost());</span>
+        final String username;
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (m.matches()) {</span>
+<span class="nc" id="L88">            username = m.group(1);</span>
+<span class="nc" id="L89">        } else {</span>
+<span class="fc" id="L90">            final String cnameHost = getCnameForHost(finalUri.getHost());</span>
+<span class="fc" id="L91">            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (!m2.matches()) {</span>
+<span class="nc" id="L93">                throw new RuntimeException(String.format(</span>
+<span class="nc" id="L94">                        R.getString(&quot;invalidGitHubPagesHost&quot;), uri));</span>
+            }
+<span class="fc" id="L96">            username = m2.group(1);</span>
+        }
+
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">        if (&quot;&quot;.equals(finalUri.getPath()) || &quot;/&quot;.equals(finalUri.getPath())) {</span>
+<span class="fc" id="L100">            return buildRootUri(username);</span>
+        } else {
+<span class="fc" id="L102">            return buildProjectUri(username, finalUri.getPath());</span>
+        }
+    }
+
+    /**
+     * Builds the project Github URI.
+     *
+     * @param username
+     *            user name
+     * @param path
+     *            path
+     * @return URI
+     */
+    private GitUri buildProjectUri(final String username, final String path) {
+<span class="fc" id="L116">        final Matcher pathMatcher = GITHUB_PAGES_PATH_PATTERN.matcher(path);</span>
+<span class="fc" id="L117">        pathMatcher.matches();</span>
+<span class="fc" id="L118">        final String resource = pathMatcher.group(2);</span>
+<span class="fc" id="L119">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
+<span class="fc" id="L120">                + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, resource);</span>
+    }
+
+    /**
+     * Builds the user's Github URI.
+     *
+     * @param username
+     *            user name
+     * @return URI
+     */
+    private GitUri buildRootUri(final String username) {
+<span class="fc" id="L131">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot; + username</span>
+<span class="fc" id="L132">                + &quot;.github.io.git&quot;, &quot;master&quot;, &quot;/&quot;);</span>
     }
 
     /**
@@ -102,13 +141,47 @@ import org.xbill.DNS.Type;
      * @throws TextParseException
      */
     private String getCnameForHost(final String host) throws TextParseException {
-<span class="fc" id="L105">        final Lookup lookup = new Lookup(host, Type.CNAME);</span>
-<span class="fc" id="L106">        lookup.run();</span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (lookup.getAnswers().length == 0) {</span>
-<span class="nc" id="L108">            LOG.log(Level.SEVERE, &quot;unableToFindCNAME&quot;, new Object[] { host });</span>
-<span class="nc" id="L109">            return null;</span>
+<span class="fc" id="L144">        final Lookup lookup = new Lookup(host, Type.CNAME);</span>
+<span class="fc" id="L145">        lookup.run();</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (lookup.getAnswers().length == 0) {</span>
+<span class="nc" id="L147">            LOG.log(Level.SEVERE, &quot;unableToFindCNAME&quot;, new Object[] { host });</span>
+<span class="nc" id="L148">            return null;</span>
         }
-<span class="fc" id="L111">        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();</span>
+<span class="fc" id="L150">        return ((CNAMERecord) lookup.getAnswers()[0]).getTarget().toString();</span>
+    }
+
+    /**
+     * Does resolution a different way.
+     *
+     * @param resourceName
+     *            resource name
+     * @return file for the resource.
+     * @throws ResourceDoesNotExistException
+     */
+    @Override
+    public File getFileForResource(final String resourceName)
+            throws GitAPIException, IOException, URISyntaxException {
+        // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
+        // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
+<span class="fc" id="L166">        final GitUri resolved = buildGitUri(URI.create(</span>
+<span class="fc" id="L167">                URI.create(getRepository().getUrl()).getSchemeSpecificPart())</span>
+<span class="fc" id="L168">                .resolve(resourceName.replace(&quot; &quot;, &quot;%20&quot;)));</span>
+        Git resourceGit;
+        try {
+<span class="fc" id="L171">            resourceGit = getGit(resolved.getGitRepositoryUri());</span>
+<span class="pc" id="L172">        } catch (final ResourceDoesNotExistException e) {</span>
+<span class="nc" id="L173">            return null;</span>
+        }
+
+<span class="fc" id="L176">        final File workTree = resourceGit.getRepository().getWorkTree();</span>
+<span class="fc" id="L177">        final File resolvedFile = new File(workTree, resolved.getResource());</span>
+<span class="fc" id="L178">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">                workTree.getCanonicalPath())) {</span>
+<span class="nc" id="L180">            throw new IOException(String.format(</span>
+<span class="nc" id="L181">                    &quot;The resolved file '%s' is not in work tree '%s'&quot;,</span>
+<span class="nc" id="L182">                    resolvedFile, workTree));</span>
+        }
+<span class="fc" id="L184">        return resolvedFile;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

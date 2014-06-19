@@ -41,8 +41,8 @@ public class GitUri {
      * @param resource
      *            resource
      */
-<span class="fc" id="L44">    public GitUri(final String gitRepositoryUri, final String branchName,</span>
-            final String resource) {
+    public GitUri(final String gitRepositoryUri, final String branchName,
+<span class="fc" id="L45">            final String resource) {</span>
 <span class="fc" id="L46">        this.gitRepositoryUri = gitRepositoryUri;</span>
 <span class="fc" id="L47">        this.branchName = branchName;</span>
 <span class="fc" id="L48">        this.resource = resource;</span>
@@ -121,15 +121,15 @@ public class GitUri {
         final String decodedFragment;
         try {
 <span class="fc" id="L123">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
-<span class="pc" id="L124">        } catch (final UnsupportedEncodingException e) {</span>
+<span class="nc" id="L124">        } catch (final UnsupportedEncodingException e) {</span>
             // should not happen.
 <span class="nc" id="L126">            throw new IllegalStateException(e);</span>
-        }
+<span class="fc" id="L127">        }</span>
         final URI combined;
 <span class="fc bfc" id="L129" title="All 2 branches covered.">        if (resource != null) {</span>
 <span class="fc" id="L130">            combined = URI.create(gitRepositoryUri</span>
 <span class="fc" id="L131">                    + resource.replace(&quot;##&quot;, &quot;#&quot;));</span>
-<span class="fc" id="L132">        } else {</span>
+        } else {
 <span class="fc" id="L133">            combined = URI.create(gitRepositoryUri);</span>
         }
 <span class="fc" id="L135">        final String slashAppendedUri = combined.toASCIIString();</span>

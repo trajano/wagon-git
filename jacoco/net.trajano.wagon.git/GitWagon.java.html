@@ -45,17 +45,17 @@ import org.eclipse.jgit.api.errors.GitAPIException;
         Git resourceGit;
         try {
 <span class="fc" id="L47">            resourceGit = getGit(resolved.getGitRepositoryUri());</span>
-<span class="pc" id="L48">        } catch (final ResourceDoesNotExistException e) {</span>
+<span class="nc" id="L48">        } catch (final ResourceDoesNotExistException e) {</span>
 <span class="nc" id="L49">            return null;</span>
-        }
+<span class="fc" id="L50">        }</span>
 
 <span class="fc" id="L52">        final File workTree = resourceGit.getRepository().getWorkTree();</span>
 <span class="fc" id="L53">        final File resolvedFile = new File(workTree, resolved.getResource());</span>
-<span class="fc" id="L54">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">                workTree.getCanonicalPath())) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
+<span class="fc" id="L55">                workTree.getCanonicalPath())) {</span>
 <span class="fc" id="L56">            throw new IOException(String.format(</span>
-<span class="fc" id="L57">                    &quot;The resolved file '%s' is not in work tree '%s'&quot;,</span>
-<span class="fc" id="L58">                    resolvedFile, workTree));</span>
+                    &quot;The resolved file '%s' is not in work tree '%s'&quot;,
+                    resolvedFile, workTree));
         }
 <span class="fc" id="L60">        return resolvedFile;</span>
     }

@@ -86,7 +86,7 @@ import org.xbill.DNS.Type;
         final String username;
 <span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (m.matches()) {</span>
 <span class="nc" id="L88">            username = m.group(1);</span>
-<span class="nc" id="L89">        } else {</span>
+        } else {
 <span class="fc" id="L90">            final String cnameHost = getCnameForHost(finalUri.getHost());</span>
 <span class="fc" id="L91">            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
 <span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (!m2.matches()) {</span>
@@ -129,7 +129,7 @@ import org.xbill.DNS.Type;
      */
     private GitUri buildRootUri(final String username) {
 <span class="fc" id="L131">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot; + username</span>
-<span class="fc" id="L132">                + &quot;.github.io.git&quot;, &quot;master&quot;, &quot;/&quot;);</span>
+                + &quot;.github.io.git&quot;, &quot;master&quot;, &quot;/&quot;);
     }
 
     /**
@@ -169,17 +169,17 @@ import org.xbill.DNS.Type;
         Git resourceGit;
         try {
 <span class="fc" id="L171">            resourceGit = getGit(resolved.getGitRepositoryUri());</span>
-<span class="pc" id="L172">        } catch (final ResourceDoesNotExistException e) {</span>
+<span class="nc" id="L172">        } catch (final ResourceDoesNotExistException e) {</span>
 <span class="nc" id="L173">            return null;</span>
-        }
+<span class="fc" id="L174">        }</span>
 
 <span class="fc" id="L176">        final File workTree = resourceGit.getRepository().getWorkTree();</span>
 <span class="fc" id="L177">        final File resolvedFile = new File(workTree, resolved.getResource());</span>
-<span class="fc" id="L178">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
-<span class="pc bpc" id="L179" title="1 of 2 branches missed.">                workTree.getCanonicalPath())) {</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
+<span class="fc" id="L179">                workTree.getCanonicalPath())) {</span>
 <span class="nc" id="L180">            throw new IOException(String.format(</span>
-<span class="nc" id="L181">                    &quot;The resolved file '%s' is not in work tree '%s'&quot;,</span>
-<span class="nc" id="L182">                    resolvedFile, workTree));</span>
+                    &quot;The resolved file '%s' is not in work tree '%s'&quot;,
+                    resolvedFile, workTree));
         }
 <span class="fc" id="L184">        return resolvedFile;</span>
     }

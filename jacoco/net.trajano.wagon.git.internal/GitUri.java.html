@@ -6,13 +6,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Git URI. This provides the logic to extract the components from a URI. The
  * URI string is in the form
  * &lt;code&gt;git:gitSpecificUri?branchName#relativeDirectory&lt;/code&gt;.
  */
 public class GitUri {
-
     /**
      * Branch name.
      */
@@ -39,24 +42,41 @@ public class GitUri {
      *            resource
      */
     public GitUri(final String gitRepositoryUri, final String branchName,
-<span class="fc" id="L42">            final String resource) {</span>
-<span class="fc" id="L43">        this.gitRepositoryUri = gitRepositoryUri;</span>
-<span class="fc" id="L44">        this.branchName = branchName;</span>
-<span class="fc" id="L45">        this.resource = resource;</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L45">            final String resource) {</span>
+<span class="fc" id="L46">        this.gitRepositoryUri = gitRepositoryUri;</span>
+<span class="fc" id="L47">        this.branchName = branchName;</span>
+<span class="fc" id="L48">        this.resource = resource;</span>
+<span class="fc" id="L49">    }</span>
 
     /**
      *
      * @param gitUri
      *            valid git URI (i.e. no git: schema).
      */
-<span class="fc" id="L53">    private GitUri(final URI gitUri) {</span>
-<span class="fc" id="L54">        branchName = gitUri.getQuery();</span>
-<span class="fc" id="L55">        final String asciiUriString = gitUri.toASCIIString();</span>
-<span class="fc" id="L56">        gitRepositoryUri = asciiUriString.substring(0,</span>
-<span class="fc" id="L57">                asciiUriString.lastIndexOf('?'));</span>
-<span class="fc" id="L58">        resource = gitUri.getFragment();</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L56">    private GitUri(final URI gitUri) {</span>
+<span class="fc" id="L57">        branchName = gitUri.getQuery();</span>
+<span class="fc" id="L58">        final String asciiUriString = gitUri.toASCIIString();</span>
+<span class="fc" id="L59">        gitRepositoryUri = asciiUriString.substring(0,</span>
+<span class="fc" id="L60">                asciiUriString.lastIndexOf('?'));</span>
+<span class="fc" id="L61">        resource = gitUri.getFragment();</span>
+<span class="fc" id="L62">    }</span>
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L67">            return false;</span>
+        }
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (obj == this) {</span>
+<span class="nc" id="L70">            return true;</span>
+        }
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if (obj.getClass() != getClass()) {</span>
+<span class="nc" id="L73">            return false;</span>
+        }
+<span class="fc" id="L75">        final GitUri x = (GitUri) obj;</span>
+<span class="fc" id="L76">        return new EqualsBuilder().append(branchName, x.branchName)</span>
+<span class="fc" id="L77">                .append(gitRepositoryUri, x.gitRepositoryUri)</span>
+<span class="fc" id="L78">                .append(resource, x.resource).build();</span>
+    }
 
     /**
      * Branch name.
@@ -64,7 +84,7 @@ public class GitUri {
      * @return branch name
      */
     public String getBranchName() {
-<span class="fc" id="L67">        return branchName;</span>
+<span class="fc" id="L87">        return branchName;</span>
     }
 
     /**
@@ -74,11 +94,17 @@ public class GitUri {
      * @return Git repository URI
      */
     public String getGitRepositoryUri() {
-<span class="fc" id="L77">        return gitRepositoryUri;</span>
+<span class="fc" id="L97">        return gitRepositoryUri;</span>
     }
 
     public String getResource() {
-<span class="fc" id="L81">        return resource;</span>
+<span class="fc" id="L101">        return resource;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L106">        return new HashCodeBuilder().append(resource).append(branchName)</span>
+<span class="nc" id="L107">                .append(gitRepositoryUri).build();</span>
     }
 
     /**
@@ -94,37 +120,43 @@ public class GitUri {
         // TODO clean this up so it is less &quot;hacky&quot;
         final String decodedFragment;
         try {
-<span class="fc" id="L97">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
-<span class="nc" id="L98">        } catch (final UnsupportedEncodingException e) {</span>
+<span class="fc" id="L123">            decodedFragment = URLDecoder.decode(fragment, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L124">        } catch (final UnsupportedEncodingException e) {</span>
             // should not happen.
-<span class="nc" id="L100">            throw new IllegalStateException(e);</span>
-<span class="fc" id="L101">        }</span>
+<span class="nc" id="L126">            throw new IllegalStateException(e);</span>
+<span class="fc" id="L127">        }</span>
         final URI combined;
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (resource != null) {</span>
-<span class="fc" id="L104">            combined = URI.create(gitRepositoryUri</span>
-<span class="fc" id="L105">                    + resource.replace(&quot;##&quot;, &quot;#&quot;));</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (resource != null) {</span>
+<span class="fc" id="L130">            combined = URI.create(gitRepositoryUri</span>
+<span class="fc" id="L131">                    + resource.replace(&quot;##&quot;, &quot;#&quot;));</span>
         } else {
-<span class="fc" id="L107">            combined = URI.create(gitRepositoryUri);</span>
+<span class="fc" id="L133">            combined = URI.create(gitRepositoryUri);</span>
         }
-<span class="fc" id="L109">        final String slashAppendedUri = combined.toASCIIString();</span>
-<span class="fc" id="L110">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
-<span class="fc" id="L111">                decodedFragment.replace(&quot; &quot;, &quot;%2520&quot;));</span>
-<span class="fc" id="L112">        final StringBuilder resolved = new StringBuilder(</span>
-<span class="fc" id="L113">                resolvedUri.toASCIIString());</span>
+<span class="fc" id="L135">        final String slashAppendedUri = combined.toASCIIString();</span>
+<span class="fc" id="L136">        final URI resolvedUri = URI.create(slashAppendedUri).resolve(</span>
+<span class="fc" id="L137">                decodedFragment.replace(&quot; &quot;, &quot;%2520&quot;));</span>
+<span class="fc" id="L138">        final StringBuilder resolved = new StringBuilder(</span>
+<span class="fc" id="L139">                resolvedUri.toASCIIString());</span>
 
-<span class="fc" id="L115">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
-<span class="fc" id="L117">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
-<span class="fc" id="L118">                    branchName, decodedFragment.replace(&quot; &quot;, &quot;%20&quot;))));</span>
+<span class="fc" id="L141">        final int lastQuestionMark = resolved.lastIndexOf(&quot;?&quot;);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (lastQuestionMark == -1) {</span>
+<span class="fc" id="L143">            return new GitUri(URI.create(format(&quot;%s?%s#%s&quot;, gitRepositoryUri,</span>
+<span class="fc" id="L144">                    branchName, decodedFragment.replace(&quot; &quot;, &quot;%20&quot;))));</span>
         }
-<span class="fc" id="L120">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
-<span class="fc" id="L121">        final int lastRelevantHash = resolved.indexOf(&quot;#&quot;, lastQuestionMark);</span>
+<span class="fc" id="L146">        final int lastRelevantSlash = resolved.indexOf(&quot;/&quot;, lastQuestionMark);</span>
+<span class="fc" id="L147">        final int lastRelevantHash = resolved.indexOf(&quot;#&quot;, lastQuestionMark);</span>
 
-<span class="pc bpc" id="L123" title="3 of 4 branches missed.">        if (lastRelevantSlash &gt; 0 &amp;&amp; lastRelevantHash &gt;= lastRelevantSlash) {</span>
-<span class="nc" id="L124">            resolved.insert(lastRelevantSlash, '#');</span>
+<span class="pc bpc" id="L149" title="3 of 4 branches missed.">        if (lastRelevantSlash &gt; 0 &amp;&amp; lastRelevantHash &gt;= lastRelevantSlash) {</span>
+<span class="nc" id="L150">            resolved.insert(lastRelevantSlash, '#');</span>
         }
 
-<span class="fc" id="L127">        return new GitUri(URI.create(resolved.toString()));</span>
+<span class="fc" id="L153">        return new GitUri(URI.create(resolved.toString()));</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L158">        return new ToStringBuilder(this).append(gitRepositoryUri)</span>
+<span class="nc" id="L159">                .append(branchName).append(resource).build();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

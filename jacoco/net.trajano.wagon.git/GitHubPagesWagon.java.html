@@ -34,13 +34,13 @@ import org.xbill.DNS.Type;
      * Github pages host pattern.
      */
 <span class="fc" id="L36">    private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern</span>
-<span class="fc" id="L37">            .compile(&quot;([a-z]+)\\.github\\.io.?&quot;);</span>
+            .compile(&quot;([a-z]+)\\.github\\.io.?&quot;);
 
     /**
      * Github pages path pattern.
      */
 <span class="fc" id="L42">    private static final Pattern GITHUB_PAGES_PATH_PATTERN = Pattern</span>
-<span class="fc" id="L43">            .compile(&quot;/([^/]+)(/.*)?&quot;);</span>
+            .compile(&quot;/([^/]+)(/.*)?&quot;);
 
     /**
      * Logger.
@@ -74,7 +74,7 @@ import org.xbill.DNS.Type;
         // Resolve redirects if needed.
 <span class="pc bpc" id="L75" title="3 of 4 branches missed.">        if (&quot;http&quot;.equals(uri.getScheme()) || &quot;https&quot;.equals(uri.getScheme())) {</span>
 <span class="fc" id="L76">            final HttpURLConnection urlConnection = (HttpURLConnection) uri</span>
-<span class="fc" id="L77">                    .toURL().openConnection();</span>
+                    .toURL().openConnection();
 <span class="fc" id="L78">            urlConnection.connect();</span>
 <span class="fc" id="L79">            urlConnection.getResponseCode();</span>
 <span class="fc" id="L80">            finalUri = urlConnection.getURL().toURI();</span>
@@ -91,7 +91,7 @@ import org.xbill.DNS.Type;
 <span class="fc" id="L91">            final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);</span>
 <span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (!m2.matches()) {</span>
 <span class="nc" id="L93">                throw new RuntimeException(String.format(</span>
-<span class="nc" id="L94">                        R.getString(&quot;invalidGitHubPagesHost&quot;), uri));</span>
+                        R.getString(&quot;invalidGitHubPagesHost&quot;), uri));
             }
 <span class="fc" id="L96">            username = m2.group(1);</span>
         }
@@ -117,7 +117,7 @@ import org.xbill.DNS.Type;
 <span class="fc" id="L117">        pathMatcher.matches();</span>
 <span class="fc" id="L118">        final String resource = pathMatcher.group(2);</span>
 <span class="fc" id="L119">        return new GitUri(&quot;ssh://git@github.com/&quot; + username + &quot;/&quot;</span>
-<span class="fc" id="L120">                + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, resource);</span>
+                + pathMatcher.group(1) + &quot;.git&quot;, &quot;gh-pages&quot;, resource);
     }
 
     /**
@@ -164,8 +164,8 @@ import org.xbill.DNS.Type;
         // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
         // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
 <span class="fc" id="L166">        final GitUri resolved = buildGitUri(URI.create(</span>
-<span class="fc" id="L167">                URI.create(getRepository().getUrl()).getSchemeSpecificPart())</span>
-<span class="fc" id="L168">                .resolve(resourceName.replace(&quot; &quot;, &quot;%20&quot;)));</span>
+                URI.create(getRepository().getUrl()).getSchemeSpecificPart())
+                .resolve(resourceName.replace(&quot; &quot;, &quot;%20&quot;)));
         Git resourceGit;
         try {
 <span class="fc" id="L171">            resourceGit = getGit(resolved.getGitRepositoryUri());</span>
@@ -176,7 +176,7 @@ import org.xbill.DNS.Type;
 <span class="fc" id="L176">        final File workTree = resourceGit.getRepository().getWorkTree();</span>
 <span class="fc" id="L177">        final File resolvedFile = new File(workTree, resolved.getResource());</span>
 <span class="pc bpc" id="L178" title="1 of 2 branches missed.">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
-<span class="fc" id="L179">                workTree.getCanonicalPath())) {</span>
+                workTree.getCanonicalPath())) {
 <span class="nc" id="L180">            throw new IOException(String.format(</span>
                     &quot;The resolved file '%s' is not in work tree '%s'&quot;,
                     resolvedFile, workTree));

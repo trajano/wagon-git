@@ -100,7 +100,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 <span class="fc" id="L100">                git.add().addFilepattern(&quot;.&quot;).call(); //$NON-NLS-1$</span>
 <span class="fc" id="L101">                git.commit().setMessage(R.getString(&quot;commitmessage&quot;)).call(); //$NON-NLS-1$</span>
 <span class="fc" id="L102">                git.push().setRemote(gitRemoteUri)</span>
-<span class="fc" id="L103">                        .setCredentialsProvider(credentialsProvider).call();</span>
+                        .setCredentialsProvider(credentialsProvider).call();
 <span class="fc" id="L104">                git.close();</span>
 <span class="fc" id="L105">                FileUtils.deleteDirectory(git.getRepository().getDirectory());</span>
 <span class="fc" id="L106">            }</span>
@@ -126,14 +126,14 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
             AuthorizationException {
         try {
 <span class="fc" id="L128">            final File file = getFileForResource(inputData.getResource()</span>
-<span class="fc" id="L129">                    .getName());</span>
+                    .getName());
 <span class="fc bfc" id="L130" title="All 2 branches covered.">            if (!file.exists()) {</span>
 <span class="fc" id="L131">                throw new ResourceDoesNotExistException(format(</span>
-<span class="fc" id="L132">                        R.getString(&quot;filenotfound&quot;), file)); //$NON-NLS-1$</span>
+                        R.getString(&quot;filenotfound&quot;), file)); //$NON-NLS-1$
             }
 <span class="pc bpc" id="L134" title="1 of 2 branches missed.">            if (!file.canRead()) {</span>
 <span class="nc" id="L135">                throw new AuthorizationException(format(</span>
-<span class="nc" id="L136">                        R.getString(&quot;cannotreadfile&quot;), file)); //$NON-NLS-1$</span>
+                        R.getString(&quot;cannotreadfile&quot;), file)); //$NON-NLS-1$
             }
 <span class="fc" id="L138">            inputData.setInputStream(new FileInputStream(file));</span>
 <span class="fc" id="L139">            inputData.getResource().setContentLength(file.length());</span>
@@ -154,12 +154,12 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
             throws TransferFailedException {
         try {
 <span class="fc" id="L156">            final File file = getFileForResource(outputData.getResource()</span>
-<span class="fc" id="L157">                    .getName());</span>
-<span class="fc bfc" id="L158" title="All 2 branches covered.">            if (!file.getParentFile().mkdirs()</span>
-<span class="pc bpc" id="L159" title="1 of 2 branches missed.">                    &amp;&amp; !file.getParentFile().exists()) {</span>
+                    .getName());
+<span class="pc bpc" id="L158" title="1 of 4 branches missed.">            if (!file.getParentFile().mkdirs()</span>
+                    &amp;&amp; !file.getParentFile().exists()) {
 <span class="nc" id="L160">                throw new TransferFailedException(format(</span>
-<span class="nc" id="L161">                        R.getString(&quot;unabletocreatedirs&quot;), //$NON-NLS-1$</span>
-<span class="nc" id="L162">                        file.getParentFile()));</span>
+                        R.getString(&quot;unabletocreatedirs&quot;), //$NON-NLS-1$
+                        file.getParentFile()));
             }
 <span class="fc" id="L164">            outputData.setOutputStream(new FileOutputStream(file));</span>
 <span class="fc" id="L165">        } catch (final IOException e) {</span>
@@ -213,7 +213,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 <span class="fc" id="L213">        final File[] files = dir.listFiles();</span>
 <span class="fc bfc" id="L214" title="All 2 branches covered.">        if (files == null) {</span>
 <span class="fc" id="L215">            throw new ResourceDoesNotExistException(format(</span>
-<span class="fc" id="L216">                    R.getString(&quot;dirnotfound&quot;), dir)); //$NON-NLS-1$</span>
+                    R.getString(&quot;dirnotfound&quot;), dir)); //$NON-NLS-1$
         }
 <span class="fc" id="L218">        final List&lt;String&gt; list = new LinkedList&lt;String&gt;();</span>
 <span class="fc bfc" id="L219" title="All 2 branches covered.">        for (final File file : files) {</span>
@@ -246,28 +246,28 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 <span class="fc" id="L246">            return cachedGit;</span>
         }
 <span class="fc" id="L248">        final File gitDir = File.createTempFile(</span>
-<span class="fc" id="L249">                gitRepositoryUri.replaceAll(&quot;[^A-Za-z]&quot;, &quot;_&quot;), &quot;wagon-git&quot;); //$NON-NLS-1$</span>
+                gitRepositoryUri.replaceAll(&quot;[^A-Za-z]&quot;, &quot;_&quot;), &quot;wagon-git&quot;); //$NON-NLS-1$
 <span class="fc" id="L250">        gitDir.delete();</span>
 <span class="fc" id="L251">        gitDir.mkdir();</span>
 
 <span class="pc bpc" id="L253" title="1 of 2 branches missed.">        if (getAuthenticationInfo().getUserName() != null) {</span>
-<span class="nc" id="L254">            credentialsProvider = new UsernamePasswordCredentialsProvider(</span>
-<span class="nc" id="L255">                    getAuthenticationInfo().getUserName(),</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">                    getAuthenticationInfo().getPassword() == null ? &quot;&quot; //$NON-NLS-1$</span>
-<span class="nc" id="L257">                            : getAuthenticationInfo().getPassword());</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            credentialsProvider = new UsernamePasswordCredentialsProvider(</span>
+                    getAuthenticationInfo().getUserName(),
+                    getAuthenticationInfo().getPassword() == null ? &quot;&quot; //$NON-NLS-1$
+                            : getAuthenticationInfo().getPassword());
         } else {
 <span class="fc" id="L259">            credentialsProvider = new PassphraseCredentialsProvider(</span>
-<span class="fc" id="L260">                    getAuthenticationInfo().getPassword());</span>
+                    getAuthenticationInfo().getPassword());
         }
         try {
 <span class="fc" id="L263">            final Git git = Git.cloneRepository().setURI(gitRepositoryUri)</span>
-<span class="fc" id="L264">                    .setCredentialsProvider(credentialsProvider)</span>
-<span class="fc" id="L265">                    .setBranch(gitUri.getBranchName()).setDirectory(gitDir)</span>
-<span class="fc" id="L266">                    .call();</span>
+                    .setCredentialsProvider(credentialsProvider)
+                    .setBranch(gitUri.getBranchName()).setDirectory(gitDir)
+                    .call();
 <span class="fc bfc" id="L267" title="All 2 branches covered.">            if (!gitUri.getBranchName().equals(git.getRepository().getBranch())) {</span>
 <span class="fc" id="L268">                LOG.log(Level.INFO, &quot;missingbranch&quot;, gitUri.getBranchName());</span>
 <span class="fc" id="L269">                final RefUpdate refUpdate = git.getRepository()</span>
-<span class="fc" id="L270">                        .getRefDatabase().newUpdate(Constants.HEAD, true);</span>
+                        .getRefDatabase().newUpdate(Constants.HEAD, true);
 <span class="fc" id="L271">                refUpdate.setForceUpdate(true);</span>
 <span class="fc" id="L272">                refUpdate.link(&quot;refs/heads/&quot; + gitUri.getBranchName()); //$NON-NLS-1$</span>
             }
@@ -293,8 +293,8 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
         URI uri;
         try {
 <span class="fc" id="L295">            uri = new URI(</span>
-<span class="fc" id="L296">                    new URI(getRepository().getUrl().replace(&quot;##&quot;, &quot;#&quot;))</span>
-<span class="fc" id="L297">                    .getSchemeSpecificPart()).normalize();</span>
+                    new URI(getRepository().getUrl().replace(&quot;##&quot;, &quot;#&quot;))
+                    .getSchemeSpecificPart()).normalize();
 <span class="fc" id="L298">            gitUri = buildGitUri(uri);</span>
 <span class="nc" id="L299">        } catch (final URISyntaxException e) {</span>
 <span class="nc" id="L300">            throw new ConnectionException(e.getMessage(), e);</span>
@@ -317,7 +317,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
         try {
 <span class="pc bpc" id="L318" title="1 of 2 branches missed.">            if (!sourceDirectory.isDirectory()) {</span>
 <span class="nc" id="L319">                throw new ResourceDoesNotExistException(format(</span>
-<span class="nc" id="L320">                        R.getString(&quot;dirnotfound&quot;), sourceDirectory)); //$NON-NLS-1$</span>
+                        R.getString(&quot;dirnotfound&quot;), sourceDirectory)); //$NON-NLS-1$
             }
 <span class="fc" id="L322">            final File fileForResource = getFileForResource(destinationDirectory);</span>
 <span class="fc" id="L323">            FileUtils.copyDirectoryStructure(sourceDirectory, fileForResource);</span>

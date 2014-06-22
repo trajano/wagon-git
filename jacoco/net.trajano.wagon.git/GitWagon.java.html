@@ -31,7 +31,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 <span class="fc" id="L31">        final String branchName = gitUri.getQuery();</span>
 <span class="fc" id="L32">        final String asciiUriString = gitUri.toASCIIString();</span>
 <span class="fc" id="L33">        final String gitRepositoryUri = asciiUriString.substring(0,</span>
-<span class="fc" id="L34">                asciiUriString.indexOf('?'));</span>
+                asciiUriString.indexOf('?'));
 <span class="fc" id="L35">        final String resource = gitUri.getFragment();</span>
 <span class="fc" id="L36">        return new GitUri(gitRepositoryUri, branchName, resource);</span>
     }
@@ -52,7 +52,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 <span class="fc" id="L52">        final File workTree = resourceGit.getRepository().getWorkTree();</span>
 <span class="fc" id="L53">        final File resolvedFile = new File(workTree, resolved.getResource());</span>
 <span class="fc bfc" id="L54" title="All 2 branches covered.">        if (!resolvedFile.getCanonicalPath().startsWith(</span>
-<span class="fc" id="L55">                workTree.getCanonicalPath())) {</span>
+                workTree.getCanonicalPath())) {
 <span class="fc" id="L56">            throw new IOException(String.format(</span>
                     &quot;The resolved file '%s' is not in work tree '%s'&quot;,
                     resolvedFile, workTree));

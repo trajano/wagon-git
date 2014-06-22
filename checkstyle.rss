@@ -26,7 +26,7 @@ under the License.
     <copyright>&#169;2012 - 2014 Trajano</copyright>
     <item>
       <title>File: 8,
-             Errors: 0,
+             Errors: 57,
              Warnings: 0,
              Infos: 0
       </title>
@@ -55,21 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.package-info.java">net/trajano/wagon/git/internal/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
+                  3
                 </td>
               </tr>
                           <tr>
@@ -83,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  9
                 </td>
               </tr>
                           <tr>
@@ -97,26 +83,12 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  30
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.PassphraseCredentialsProvider.java">net/trajano/wagon/git/internal/PassphraseCredentialsProvider.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.GitUri.java">net/trajano/wagon/git/internal/GitUri.java</a>
+                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.package-info.java">net/trajano/wagon/git/internal/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -144,6 +116,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.GitUri.java">net/trajano/wagon/git/internal/GitUri.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.package-info.java">net/trajano/wagon/git/package-info.java</a>
                 </td>
                 <td>
@@ -154,6 +140,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/wagon-git/checkstyle.html#net.trajano.wagon.git.internal.PassphraseCredentialsProvider.java">net/trajano/wagon/git/internal/PassphraseCredentialsProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
               </tr>
                       </tbody>

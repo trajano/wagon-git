@@ -3,4 +3,4 @@ Git Wagon Provider,net.trajano.wagon.git,GitWagon,3,72,0,2,2,14,0,4,0,3
 Git Wagon Provider,net.trajano.wagon.git,GitHubPagesWagon,57,196,8,8,8,38,7,8,0,7
 Git Wagon Provider,net.trajano.wagon.git.internal,PassphraseCredentialsProvider,0,58,0,8,0,13,0,8,0,4
 Git Wagon Provider,net.trajano.wagon.git.internal,GitUri,50,174,6,8,8,34,7,9,2,7
-Git Wagon Provider,net.trajano.wagon.git.internal,AbstractGitWagon,216,370,8,22,43,76,7,20,0,12
+Git Wagon Provider,net.trajano.wagon.git.internal,AbstractGitWagon,208,378,8,22,41,78,7,20,0,12

@@ -323,8 +323,8 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 <span class="fc" id="L323">            FileUtils.copyDirectoryStructure(sourceDirectory, fileForResource);</span>
 <span class="fc" id="L324">        } catch (final IOException e) {</span>
 <span class="fc" id="L325">            throw new TransferFailedException(e.getMessage(), e);</span>
-<span class="nc" id="L326">        } catch (final GitAPIException e) {</span>
-<span class="nc" id="L327">            throw new TransferFailedException(e.getMessage(), e);</span>
+<span class="fc" id="L326">        } catch (final GitAPIException e) {</span>
+<span class="fc" id="L327">            throw new TransferFailedException(e.getMessage(), e);</span>
 <span class="nc" id="L328">        } catch (final URISyntaxException e) {</span>
 <span class="nc" id="L329">            throw new TransferFailedException(e.getMessage(), e);</span>
 <span class="fc" id="L330">        }</span>

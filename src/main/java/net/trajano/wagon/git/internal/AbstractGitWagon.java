@@ -85,7 +85,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws URISyntaxException
      */
     public abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
-    URISyntaxException;
+            URISyntaxException;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -100,7 +100,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                 git.add().addFilepattern(".").call(); //$NON-NLS-1$
                 git.commit().setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
                 git.push().setRemote(gitRemoteUri)
-                        .setCredentialsProvider(credentialsProvider).call();
+                .setCredentialsProvider(credentialsProvider).call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository().getDirectory());
             }
@@ -239,9 +239,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @thorws ResourceDoesNotExistException remote repository does not exist.
      */
     protected Git getGit(final String gitRepositoryUri) throws GitAPIException,
-            IOException, URISyntaxException, ResourceDoesNotExistException {
+    IOException, URISyntaxException, ResourceDoesNotExistException {
         final Git cachedGit = gitCache.get(gitRepositoryUri);
-        LOG.fine("Loading " + gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;
         }
@@ -289,12 +288,12 @@ public abstract class AbstractGitWagon extends StreamWagon {
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
-    AuthenticationException {
+            AuthenticationException {
         URI uri;
         try {
             uri = new URI(
                     new URI(getRepository().getUrl().replace("##", "#"))
-                    .getSchemeSpecificPart()).normalize();
+                            .getSchemeSpecificPart()).normalize();
             gitUri = buildGitUri(uri);
         } catch (final URISyntaxException e) {
             throw new ConnectionException(e.getMessage(), e);

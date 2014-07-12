@@ -69,7 +69,7 @@ public class GitHubPagesWagon extends AbstractGitWagon {
      */
     @Override
     public GitUri buildGitUri(final URI uri) throws IOException,
-            URISyntaxException {
+    URISyntaxException {
         final URI finalUri;
         // Resolve redirects if needed.
         if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())) {
@@ -170,6 +170,7 @@ public class GitHubPagesWagon extends AbstractGitWagon {
         try {
             resourceGit = getGit(resolved.getGitRepositoryUri());
         } catch (final ResourceDoesNotExistException e) {
+            LOG.throwing(this.getClass().getName(), "getFileForResource", e);
             return null;
         }
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import net.trajano.wagon.git.internal.AbstractGitWagon;
 import net.trajano.wagon.git.internal.GitUri;
@@ -22,6 +24,26 @@ import org.eclipse.jgit.api.errors.GitAPIException;
  */
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends AbstractGitWagon {
+    /**
+     * Logger.
+     */
+    private static final Logger LOG;
+
+    /**
+     * Messages resource path.
+     */
+    private static final String MESSAGES = "META-INF/Messages";
+
+    /**
+     * Resource bundle.
+     */
+    private static final ResourceBundle R;
+
+    static {
+        LOG = Logger.getLogger("net.trajano.wagon.git", MESSAGES);
+        R = ResourceBundle.getBundle(MESSAGES);
+    }
+
     /**
      * Constructs the object from a URI string that contains "git:" schema.
      * {@inheritDoc}
@@ -46,6 +68,7 @@ public class GitWagon extends AbstractGitWagon {
         try {
             resourceGit = getGit(resolved.getGitRepositoryUri());
         } catch (final ResourceDoesNotExistException e) {
+            LOG.throwing(this.getClass().getName(), "getFileForResource", e);
             return null;
         }
 
@@ -53,8 +76,7 @@ public class GitWagon extends AbstractGitWagon {
         final File resolvedFile = new File(workTree, resolved.getResource());
         if (!resolvedFile.getCanonicalPath().startsWith(
                 workTree.getCanonicalPath())) {
-            throw new IOException(String.format(
-                    "The resolved file '%s' is not in work tree '%s'",
+            throw new IOException(String.format(R.getString("notInWorkTree"),
                     resolvedFile, workTree));
         }
         return resolvedFile;

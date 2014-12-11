@@ -39,9 +39,22 @@ follows:
         </site>
     </distributionManagement>
 
-The `<id>` to represent the authentication details in `settings.xml`.
-
 The `<name>` can be any value.
+
+The `<id>` to represent the authentication details in `settings.xml`. At a minimum,
+your `settings.xml` file must contain a `<server>` with this `<id>` and a valid
+`<username>` element (`git` if using ssh, or your github username if using
+http). If you use passwordless-ssh with no password on the key file, then no 
+password is necessary.
+
+    <server>
+      <id>gh-pages</id>
+      <username>git</username>
+      <!-- different method for http authentication -->
+      <!-- <username>trajano</username> -->
+      <!-- supply a password for your ssh keyfile or your http account -->
+      <!-- <password>trajano's_pass</password> -->
+    </server>    
 
 For [GitHub Pages][] the project URL should be prefixed with `github:`.  If
 the host is not in the github.io subdomain, a CNAME lookup will be performed

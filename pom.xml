@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>3.6.0.201411121045-m1</version>
+            <version>3.6.2.201501210735-r</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -201,11 +201,6 @@
                     <version>2.5.3</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>2.5.4</version>
-                </plugin>
-                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.7.2.201409121644</version>
@@ -300,10 +295,6 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
@@ -379,7 +370,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <execute />
+                                                <execute/>
                                             </action>
                                         </pluginExecution>
                                     </pluginExecutions>

@@ -56,7 +56,7 @@ password is necessary.
       <!-- <password>trajano's_pass</password> -->
     </server>    
 
-For [GitHub Pages][] the project URL should be prefixed with `github:`.  If
+For [GitHub Pages][GitHubPages] the project URL should be prefixed with `github:`.  If
 the host is not in the github.io subdomain, a CNAME lookup will be performed
 to determine the [GitHub] user name.
 
@@ -64,6 +64,21 @@ For generic git repositories, the `<url>` must start with `git:` and end
 with a `#`.  The branch name must also be specified between the `?` and `#` 
 characters.  The `#` at the end is required to prevent additional characters
 that will be appended by Maven to be considered as part of the original URL.
+
+Multi-module and project.artifactId
+-----------------------------------
+
+Do not use the form in multi-module projects
+
+    <url>github:http://site.trajano.net/${project.artifactId}/</url>
+
+because the sub modules will use the `artifactId` of the current module and
+not make it part of the parent which site would be expecting.  This is not
+just a limitation of this plugin but is a limitation of the Maven site plugin
+itself.  Instead explicity set it on your multi-module project POM e.g. 
+
+    <url>github:http://site.trajano.net/jetng/</url>
+    
 
 Protected private keys
 ----------------------

@@ -34,7 +34,7 @@ public class GitHubPagesWagon extends AbstractGitWagon {
      * Github pages host pattern.
      */
     private static final Pattern GITHUB_PAGES_HOST_PATTERN = Pattern
-            .compile("([a-z-]+)\\.github\\.io.?");
+            .compile("([a-z0-9-]+)\\.github\\.io.?");
 
     /**
      * Github pages path pattern.

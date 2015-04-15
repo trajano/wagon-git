@@ -77,7 +77,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
 
     /**
      * Builds the wagon specific Git URI based on the repository URL. This is
-     * made public rather than protected to allow testing of the method.
+     * subclasses can make it public rather than protected to allow testing of
+     * the method.
      *
      * @param repositoryUrl
      *            repository URL
@@ -85,7 +86,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
+    protected abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
             URISyntaxException;
 
     /**

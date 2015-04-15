@@ -11,9 +11,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.trajano.wagon.git.internal.AbstractGitWagon;
-import net.trajano.wagon.git.internal.GitUri;
-
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.Wagon;
 import org.codehaus.plexus.component.annotations.Component;
@@ -23,6 +20,9 @@ import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
+
+import net.trajano.wagon.git.internal.AbstractGitWagon;
+import net.trajano.wagon.git.internal.GitUri;
 
 /**
  * Github Pages Wagon.
@@ -67,7 +67,7 @@ public class GitHubPagesWagon extends AbstractGitWagon {
      */
     @Override
     public GitUri buildGitUri(final URI uri) throws IOException,
-            URISyntaxException {
+    URISyntaxException {
 
         final URI finalUri;
         // Resolve redirects if needed.
@@ -90,7 +90,7 @@ public class GitHubPagesWagon extends AbstractGitWagon {
             final String cnameHost = getCnameForHost(finalUri.getHost());
             final Matcher m2 = GITHUB_PAGES_HOST_PATTERN.matcher(cnameHost);
             if (!m2.matches()) {
-                throw new RuntimeException(String.format(R.getString("invalidGitHubPagesHost"), uri));
+                throw new URISyntaxException(finalUri.toASCIIString(), String.format(R.getString("invalidGitHubPagesHost"), uri));
             }
             username = m2.group(1);
         }
@@ -162,8 +162,8 @@ public class GitHubPagesWagon extends AbstractGitWagon {
      */
     @Override
     public File getFileForResource(final String resourceName) throws GitAPIException,
-            IOException,
-            URISyntaxException {
+    IOException,
+    URISyntaxException {
 
         // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
         // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc

@@ -16,13 +16,14 @@ import org.junit.Test;
  * Tests exception scenarios.
  *
  * @author Archimedes
- *
  */
 public class GitWagonExceptionTest {
+
     /**
      * Git remote directory 1.
      */
     private File gitRemoteDirectory1;
+
     /**
      * Git remote directory 2.
      */
@@ -33,19 +34,24 @@ public class GitWagonExceptionTest {
      */
     @Before
     public void createRemote() throws Exception {
+
         gitRemoteDirectory1 = File.createTempFile("remote", null);
         gitRemoteDirectory1.delete();
-        Git.init().setDirectory(gitRemoteDirectory1).call();
+        Git.init()
+                .setDirectory(gitRemoteDirectory1)
+                .call();
         gitRemoteDirectory2 = File.createTempFile("remote", null);
         gitRemoteDirectory2.delete();
-        Git.init().setDirectory(gitRemoteDirectory2).call();
+        Git.init()
+                .setDirectory(gitRemoteDirectory2)
+                .call();
     }
 
     @Test(expected = TransferFailedException.class)
     public void testPutOutside() throws Exception {
+
         final GitWagon gitWagon = new GitWagon();
-        gitWagon.connect(new Repository("gh", "git:"
-                + gitRemoteDirectory1.toURI() + "?ghPages#"));
+        gitWagon.connect(new Repository("gh", "git:" + gitRemoteDirectory1.toURI() + "?ghPages#"));
         final File tempDir = File.createTempFile("temp", null);
         tempDir.delete();
         tempDir.mkdir();
@@ -58,25 +64,24 @@ public class GitWagonExceptionTest {
 
     @Test
     public void testPutParent() throws Exception {
+
         final GitWagon gitWagon = new GitWagon();
-        gitWagon.connect(new Repository("gh", "git:"
-                + gitRemoteDirectory1.toURI() + "?ghPages#"));
+        gitWagon.connect(new Repository("gh", "git:" + gitRemoteDirectory1.toURI() + "?ghPages#"));
         final File tempDir = File.createTempFile("temp", null);
         tempDir.delete();
         tempDir.mkdir();
         new FileOutputStream(new File(tempDir, "foo")).close();
         new FileOutputStream(new File(tempDir, "bar")).close();
         new FileOutputStream(new File(tempDir, "one")).close();
-        gitWagon.putDirectory(tempDir, "../" + gitRemoteDirectory2.getName()
-                + "?ghPages#");
+        gitWagon.putDirectory(tempDir, "../" + gitRemoteDirectory2.getName() + "?ghPages#");
         FileUtils.deleteDirectory(tempDir);
     }
 
     @Test(expected = TransferFailedException.class)
     public void testUnableToCreateDirs() throws Exception {
+
         final GitWagon gitWagon = new GitWagon();
-        gitWagon.connect(new Repository("gh", "git:"
-                + gitRemoteDirectory1.toURI() + "?ghPages#"));
+        gitWagon.connect(new Repository("gh", "git:" + gitRemoteDirectory1.toURI() + "?ghPages#"));
         final File temp = File.createTempFile("temp", null);
         gitWagon.put(temp, "////");
         temp.delete();

@@ -8,6 +8,7 @@ import org.eclipse.jgit.transport.URIish;
  * A {@link CredentialsProvider} that takes in a passphrase.
  */
 public class PassphraseCredentialsProvider extends CredentialsProvider {
+
     /**
      * Passphrase.
      */
@@ -28,7 +29,9 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      * {@inheritDoc}
      */
     @Override
-    public boolean get(final URIish uriish, final CredentialItem... items) {
+    public boolean get(final URIish uriish,
+            final CredentialItem... items) {
+
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {
                 ((CredentialItem.StringType) item).setValue(passphrase);
@@ -46,6 +49,7 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      */
     @Override
     public boolean isInteractive() {
+
         return false;
     }
 
@@ -57,6 +61,7 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      */
     @Override
     public boolean supports(final CredentialItem... items) {
+
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {
                 return true;

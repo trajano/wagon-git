@@ -15,35 +15,34 @@ import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Type;
 
 public class NetworkLookupTests {
+
     @Test
     public void testGithubPages() throws Exception {
-        final GitUri uri = new GitHubPagesWagon().buildGitUri(URI
-                .create("http://site.trajano.net/foo"));
-        assertEquals("ssh://git@github.com/trajano/foo.git",
-                uri.getGitRepositoryUri());
+
+        final GitUri uri = new GitHubPagesWagon().buildGitUri(URI.create("http://site.trajano.net/foo"));
+        assertEquals("ssh://git@github.com/trajano/foo.git", uri.getGitRepositoryUri());
     }
 
     @Test
     public void testGithubPagesWithCname() throws Exception {
-        final GitUri uri = new GitHubPagesWagon().buildGitUri(URI
-                .create("http://twitter.github.io/bootstrap"));
-        assertEquals("ssh://git@github.com/twitter/bootstrap.git",
-                uri.getGitRepositoryUri());
+
+        final GitUri uri = new GitHubPagesWagon().buildGitUri(URI.create("http://twitter.github.io/bootstrap"));
+        assertEquals("ssh://git@github.com/twitter/bootstrap.git", uri.getGitRepositoryUri());
     }
 
     @Test
     public void testSiteTrajanoNet() throws Exception {
+
         final Lookup lookup = new Lookup("site.trajano.net", Type.CNAME);
         lookup.run();
-        assertEquals("trajano.github.io.", ((CNAMERecord) lookup.run()[0])
-                .getTarget().toString());
+        assertEquals("trajano.github.io.", ((CNAMERecord) lookup.run()[0]).getTarget()
+                .toString());
     }
 
     @Test
     public void testUrlRedirectToFolder() throws Exception {
 
-        final HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-                "http://site.trajano.net/ZaWorld").openConnection();
+        final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://site.trajano.net/ZaWorld").openConnection();
         urlConnection.connect();
         assertEquals(200, urlConnection.getResponseCode());
         assertEquals("http://site.trajano.net/ZaWorld/", urlConnection.getURL()

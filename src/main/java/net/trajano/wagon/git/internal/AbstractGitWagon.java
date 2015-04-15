@@ -86,7 +86,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws URISyntaxException
      */
     public abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
-    URISyntaxException;
+            URISyntaxException;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -100,13 +100,15 @@ public abstract class AbstractGitWagon extends StreamWagon {
             for (final Entry<String, Git> gitEntry : gitCache.entrySet()) {
                 final Git git = gitEntry.getValue();
                 git.add()
-                .addFilepattern(".").call(); //$NON-NLS-1$
+                        .addFilepattern(".") //$NON-NLS-1$
+                        .call();
                 git.commit()
-                .setMessage(R.getString("commitmessage")).call(); //$NON-NLS-1$
+                        .setMessage(R.getString("commitmessage")) //$NON-NLS-1$
+                        .call();
                 git.push()
-                .setRemote(gitEntry.getKey())
-                .setCredentialsProvider(credentialsProvider)
-                .call();
+                        .setRemote(gitEntry.getKey())
+                        .setCredentialsProvider(credentialsProvider)
+                        .call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository()
                         .getDirectory());
@@ -129,8 +131,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
      */
     @Override
     public void fillInputData(final InputData inputData) throws TransferFailedException,
-    ResourceDoesNotExistException,
-    AuthorizationException {
+            ResourceDoesNotExistException,
+            AuthorizationException {
 
         try {
             final File file = getFileForResource(inputData.getResource()
@@ -143,7 +145,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
             }
             inputData.setInputStream(new FileInputStream(file));
             inputData.getResource()
-            .setContentLength(file.length());
+                    .setContentLength(file.length());
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         } catch (final GitAPIException e) {
@@ -163,8 +165,9 @@ public abstract class AbstractGitWagon extends StreamWagon {
             final File file = getFileForResource(outputData.getResource()
                     .getName());
             if (!file.getParentFile()
-                    .mkdirs() && !file.getParentFile()
-                    .exists()) {
+                    .mkdirs()
+                    && !file.getParentFile()
+                            .exists()) {
                 throw new TransferFailedException(format(R.getString("unabletocreatedirs"), //$NON-NLS-1$
                         file.getParentFile()));
             }
@@ -193,8 +196,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws ResourceDoesNotExistException
      */
     protected abstract File getFileForResource(String resourceName) throws GitAPIException,
-    IOException,
-    URISyntaxException;
+            IOException,
+            URISyntaxException;
 
     /**
      * {@inheritDoc}
@@ -206,8 +209,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
     @Override
     @SuppressWarnings("all")
     public List<String> getFileList(final String directory) throws TransferFailedException,
-    ResourceDoesNotExistException,
-    AuthorizationException {
+            ResourceDoesNotExistException,
+            AuthorizationException {
 
         final File dir;
         try {
@@ -247,9 +250,9 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @thorws ResourceDoesNotExistException remote repository does not exist.
      */
     protected Git getGit(final String gitRepositoryUri) throws GitAPIException,
-    IOException,
-    URISyntaxException,
-    ResourceDoesNotExistException {
+            IOException,
+            URISyntaxException,
+            ResourceDoesNotExistException {
 
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
@@ -301,7 +304,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
-    AuthenticationException {
+            AuthenticationException {
 
         URI uri;
         try {
@@ -325,8 +328,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
     @SuppressWarnings("all")
     public void putDirectory(final File sourceDirectory,
             final String destinationDirectory) throws TransferFailedException,
-            ResourceDoesNotExistException,
-            AuthorizationException {
+                    ResourceDoesNotExistException,
+                    AuthorizationException {
 
         try {
             if (!sourceDirectory.isDirectory()) {

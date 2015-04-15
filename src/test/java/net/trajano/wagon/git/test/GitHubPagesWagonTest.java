@@ -20,6 +20,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected String getProtocol() {
+
         return "github";
     }
 
@@ -28,6 +29,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected int getTestRepositoryPort() {
+
         return 0;
     }
 
@@ -39,6 +41,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected String getTestRepositoryUrl() throws IOException {
+
         return "github:http://site.trajano.net/ZaWorld/";
     }
 
@@ -47,6 +50,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void setupWagonTestingFixtures() throws Exception {
+
     }
 
     /**
@@ -55,6 +59,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected boolean supportsGetIfNewer() {
+
         return false;
     }
 
@@ -63,5 +68,6 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void tearDownWagonTestingFixtures() throws Exception {
+
     }
 }

@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * <code>git:gitSpecificUri?branchName#relativeDirectory</code>.
  */
 public class GitUri {
+
     /**
      * Branch name.
      */
@@ -41,28 +42,26 @@ public class GitUri {
      * @param resource
      *            resource
      */
-    public GitUri(final String gitRepositoryUri, final String branchName,
-            final String resource) {
+    public GitUri(final String gitRepositoryUri, final String branchName, final String resource) {
         this.gitRepositoryUri = gitRepositoryUri;
         this.branchName = branchName;
         this.resource = resource;
     }
 
     /**
-     *
      * @param gitUri
      *            valid git URI (i.e. no git: schema).
      */
     private GitUri(final URI gitUri) {
         branchName = gitUri.getQuery();
         final String asciiUriString = gitUri.toASCIIString();
-        gitRepositoryUri = asciiUriString.substring(0,
-                asciiUriString.lastIndexOf('?'));
+        gitRepositoryUri = asciiUriString.substring(0, asciiUriString.lastIndexOf('?'));
         resource = gitUri.getFragment();
     }
 
     @Override
     public boolean equals(final Object obj) {
+
         if (obj == null) {
             return false;
         }
@@ -75,7 +74,8 @@ public class GitUri {
         final GitUri x = (GitUri) obj;
         return new EqualsBuilder().append(branchName, x.branchName)
                 .append(gitRepositoryUri, x.gitRepositoryUri)
-                .append(resource, x.resource).build();
+                .append(resource, x.resource)
+                .build();
     }
 
     /**
@@ -84,6 +84,7 @@ public class GitUri {
      * @return branch name
      */
     public String getBranchName() {
+
         return branchName;
     }
 
@@ -94,17 +95,22 @@ public class GitUri {
      * @return Git repository URI
      */
     public String getGitRepositoryUri() {
+
         return gitRepositoryUri;
     }
 
     public String getResource() {
+
         return resource;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(resource).append(branchName)
-                .append(gitRepositoryUri).build();
+
+        return new HashCodeBuilder().append(resource)
+                .append(branchName)
+                .append(gitRepositoryUri)
+                .build();
     }
 
     /**
@@ -117,6 +123,7 @@ public class GitUri {
      * @return resolved {@link GitUri}
      */
     public GitUri resolve(final String fragment) {
+
         // TODO clean this up so it is less "hacky"
         final String decodedFragment;
         try {
@@ -127,21 +134,18 @@ public class GitUri {
         }
         final URI combined;
         if (resource != null) {
-            combined = URI.create(gitRepositoryUri
-                    + resource.replace("##", "#"));
+            combined = URI.create(gitRepositoryUri + resource.replace("##", "#"));
         } else {
             combined = URI.create(gitRepositoryUri);
         }
         final String slashAppendedUri = combined.toASCIIString();
-        final URI resolvedUri = URI.create(slashAppendedUri).resolve(
-                decodedFragment.replace(" ", "%2520"));
-        final StringBuilder resolved = new StringBuilder(
-                resolvedUri.toASCIIString());
+        final URI resolvedUri = URI.create(slashAppendedUri)
+                .resolve(decodedFragment.replace(" ", "%2520"));
+        final StringBuilder resolved = new StringBuilder(resolvedUri.toASCIIString());
 
         final int lastQuestionMark = resolved.lastIndexOf("?");
         if (lastQuestionMark == -1) {
-            return new GitUri(URI.create(format("%s?%s#%s", gitRepositoryUri,
-                    branchName, decodedFragment.replace(" ", "%20"))));
+            return new GitUri(URI.create(format("%s?%s#%s", gitRepositoryUri, branchName, decodedFragment.replace(" ", "%20"))));
         }
         final int lastRelevantSlash = resolved.indexOf("/", lastQuestionMark);
         final int lastRelevantHash = resolved.indexOf("#", lastQuestionMark);
@@ -155,7 +159,10 @@ public class GitUri {
 
     @Override
     public String toString() {
+
         return new ToStringBuilder(this).append(gitRepositoryUri)
-                .append(branchName).append(resource).build();
+                .append(branchName)
+                .append(resource)
+                .build();
     }
 }

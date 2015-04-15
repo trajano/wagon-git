@@ -24,6 +24,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
  */
 @Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
 public class GitWagon extends AbstractGitWagon {
+
     /**
      * Logger.
      */
@@ -50,17 +51,19 @@ public class GitWagon extends AbstractGitWagon {
      */
     @Override
     public GitUri buildGitUri(final URI gitUri) {
+
         final String branchName = gitUri.getQuery();
         final String asciiUriString = gitUri.toASCIIString();
-        final String gitRepositoryUri = asciiUriString.substring(0,
-                asciiUriString.indexOf('?'));
+        final String gitRepositoryUri = asciiUriString.substring(0, asciiUriString.indexOf('?'));
         final String resource = gitUri.getFragment();
         return new GitUri(gitRepositoryUri, branchName, resource);
     }
 
     @Override
-    public File getFileForResource(final String resourceName)
-            throws GitAPIException, IOException, URISyntaxException {
+    public File getFileForResource(final String resourceName) throws GitAPIException,
+            IOException,
+            URISyntaxException {
+
         // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
         // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
         final GitUri resolved = getGitUri().resolve(resourceName);
@@ -68,16 +71,17 @@ public class GitWagon extends AbstractGitWagon {
         try {
             resourceGit = getGit(resolved.getGitRepositoryUri());
         } catch (final ResourceDoesNotExistException e) {
-            LOG.throwing(this.getClass().getName(), "getFileForResource", e);
+            LOG.throwing(this.getClass()
+                    .getName(), "getFileForResource", e);
             return null;
         }
 
-        final File workTree = resourceGit.getRepository().getWorkTree();
+        final File workTree = resourceGit.getRepository()
+                .getWorkTree();
         final File resolvedFile = new File(workTree, resolved.getResource());
-        if (!resolvedFile.getCanonicalPath().startsWith(
-                workTree.getCanonicalPath())) {
-            throw new IOException(String.format(R.getString("notInWorkTree"),
-                    resolvedFile, workTree));
+        if (!resolvedFile.getCanonicalPath()
+                .startsWith(workTree.getCanonicalPath())) {
+            throw new IOException(String.format(R.getString("notInWorkTree"), resolvedFile, workTree));
         }
         return resolvedFile;
     }

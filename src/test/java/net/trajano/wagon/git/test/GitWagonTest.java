@@ -13,6 +13,7 @@ import org.eclipse.jgit.api.Git;
  * Tests {@link GitWagon}.
  */
 public class GitWagonTest extends StreamingWagonTestCase {
+
     /**
      * Git remote directory.
      */
@@ -20,11 +21,12 @@ public class GitWagonTest extends StreamingWagonTestCase {
 
     /**
      * Protocol hint.
-     * 
+     *
      * @return "git"
      */
     @Override
     protected String getProtocol() {
+
         return "git";
     }
 
@@ -33,6 +35,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected int getTestRepositoryPort() {
+
         return 0;
     }
 
@@ -41,6 +44,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected String getTestRepositoryUrl() throws IOException {
+
         return "git:" + gitRemoteDirectory.toURI() + "?gh-pages";
     }
 
@@ -49,6 +53,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void setUp() throws Exception {
+
         gitRemoteDirectory = File.createTempFile("remote", null);
         gitRemoteDirectory.delete();
         super.setUp();
@@ -59,7 +64,10 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void setupWagonTestingFixtures() throws Exception {
-        Git.init().setDirectory(gitRemoteDirectory).call();
+
+        Git.init()
+                .setDirectory(gitRemoteDirectory)
+                .call();
         File.createTempFile("temp", null, gitRemoteDirectory);
     }
 
@@ -69,6 +77,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected boolean supportsGetIfNewer() {
+
         return false;
     }
 
@@ -77,6 +86,7 @@ public class GitWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected void tearDownWagonTestingFixtures() throws Exception {
+
         FileUtils.deleteDirectory(gitRemoteDirectory);
     }
 }

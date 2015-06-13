@@ -275,6 +275,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                     .setCredentialsProvider(credentialsProvider)
                     .setBranch(gitUri.getBranchName())
                     .setDirectory(gitDir)
+                    .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback())
                     .call();
             if (!gitUri.getBranchName()
                     .equals(git.getRepository()

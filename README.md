@@ -89,7 +89,7 @@ corresponding to the `<distributionManagement><site><id>` without the
 
     <server>
         <id>gh-pages</id>
-        <password>privatekeypassword</password>
+        <passphrase>privatekeypassphrase</passphrase>
     </server>
 
 If you're not protecting your private key, then no additional changes are 

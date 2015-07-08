@@ -84,8 +84,8 @@ Protected private keys
 ----------------------
 If you are using a passphrase to protect your private key, then in 
 `settings.xml`, then should be a `<server>` definition with the `<id>` 
-corresponding to the `<distributionManagement><site><id>` without the 
-`<user>` for example:
+corresponding to the `<distributionManagement><site><id>` and with a 
+`<passphrase>` element but without the `<user>`.  For example:
 
     <server>
         <id>gh-pages</id>

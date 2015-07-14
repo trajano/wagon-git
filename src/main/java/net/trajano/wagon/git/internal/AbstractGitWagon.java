@@ -248,7 +248,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws GitAPIException
      * @throws IOException
      * @throws URISyntaxException
-     * @thorws ResourceDoesNotExistException remote repository does not exist.
+     * @throws ResourceDoesNotExistException remote repository does not exist.
      */
     protected Git getGit(final String gitRepositoryUri) throws GitAPIException,
             IOException,

@@ -109,6 +109,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                 git.push()
                         .setRemote(gitEntry.getKey())
                         .setCredentialsProvider(credentialsProvider)
+                        .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback())
                         .call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository()

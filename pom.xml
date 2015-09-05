@@ -8,14 +8,14 @@
     </parent>
     <groupId>net.trajano.wagon</groupId>
     <artifactId>wagon-git</artifactId>
-    <version>2.0.4</version>
+    <version>2.0.5-SNAPSHOT</version>
     <name>Git Wagon Provider</name>
     <description>Git Wagon Provider</description>
     <url>http://site.trajano.net/wagon-git</url>
     <scm>
         <connection>scm:git:https://github.com/trajano/${project.artifactId}</connection>
         <developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
-        <tag>wagon-git-2.0.4</tag>
+        <tag>wagon-git-2.0.1</tag>
     </scm>
     <distributionManagement>
         <site>
@@ -377,7 +377,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <execute/>
+                                                <execute />
                                             </action>
                                         </pluginExecution>
                                     </pluginExecutions>

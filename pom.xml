@@ -15,7 +15,7 @@
     <scm>
         <connection>scm:git:https://github.com/trajano/${project.artifactId}</connection>
         <developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
-        <tag>wagon-git-2.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <site>

@@ -45,6 +45,8 @@ public final class AgentJschConfigSessionFactory extends JschConfigSessionFactor
             final IdentityRepository irepo = new RemoteIdentityRepository(con);
             jsch.setIdentityRepository(irepo);
             return jsch;
+	} catch (final UnsatisfiedLinkError e) {
+            return super.createDefaultJSch(fs);
         } catch (final AgentProxyException e) {
             return super.createDefaultJSch(fs);
         }

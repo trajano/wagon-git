@@ -121,9 +121,27 @@ as a build extension.
         </dependencies>
     </plugin>
 
+Non-relative Multi-Module
+-------------------------
+Projects such as mybatis[4] use a non relative parent. This causes a conflict
+when trying to release when both the non-relative parent and submodule uses
+`github:` style resulting in NullPointerException similar to the following.
+
+[INFO] Pushing C:\mybatis\ehcache-cache\target\site
+[INFO]    >>> to github:ssh://mybatis.github.io/parent/../ehcache-cache
+
+[ERROR]
+Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.4:deploy
+(default-cli) on project mybatis-ehcache: Execution default-cli of goal
+org.apache.maven.plugins:maven-site-plugin:3.4:deploy failed. NullPointerException
+
+A work around for this issue is to use the `github:` style in the non-relative
+parent and to use the generic git style for submodules.
+
 [Trajano]: http://www.trajano.net/
 [GitHub]: http://github.com/
 [GitHubPages]: https://pages.github.com/
 [1]: http://maven.apache.org/shared/maven-doxia-tools/
 [2]: http://jira.codehaus.org/browse/MSITE-709
 [3]: http://site.trajano.net/maven-doxia-tools/doxia-integration-tools/
+[4]: https://github.com/mybatis

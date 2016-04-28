@@ -35,7 +35,12 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {
                 ((CredentialItem.StringType) item).setValue(passphrase);
-                continue;
+            }
+            // This will automatically say "yes" to prompts
+            // TODO make this explicit to just accept host
+            // TODO make this configurable
+            if (item instanceof CredentialItem.YesNoType) {
+                ((CredentialItem.YesNoType) item).setValue(true);
             }
         }
         return true;
@@ -57,13 +62,16 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      * {@inheritDoc}
      *
      * @return <code>true</code> when items contains a {@link CredentialItem}
-     *         .StringType
+     *         .StringType or .YesNoType
      */
     @Override
     public boolean supports(final CredentialItem... items) {
 
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {
+                return true;
+            }
+            if (item instanceof CredentialItem.YesNoType) {
                 return true;
             }
         }

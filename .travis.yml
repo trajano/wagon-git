@@ -17,8 +17,8 @@ addons:
   sonarqube: true
 env:
   global:
-  - secure: ftPHnF0owSRqd7F/MFDLj44C7uV0AIi0PG1+hTz3cL81t3d+AZhHb6ZchgaE6N9sFAaiCYnH1C0+XMIYfPGY8Ylu5HJelxuswcUzVs/8MKo/lAZ3JZlxvKWUWnZNTYG/f7nr1q3PTuUjvA6nODurtL7ow0ubLnPy1gT6tq2ppaU=
-  - secure: RwqlBy61oJf2iILq2m8tYofwQu9AsfjrhkLhKfAbHSI2qsr9Oh4S5HyPZ5wvbDLU+r5mg8y9vlxk8Vho8RFcpY6+mL0Mygcchqp0OcCHAcuXx2kCBldp6y/bwzRQdloIe3RzfF674hqH4QLlvnvhPiHlOgtIbKnVNp6v8fjvcUw=
+  - secure: aagYTtHOrY7nBp4NKdQz9NcYK9zfJ4faTUGwS7DwYuDPsc1qJiW3n5AFlnWAxWm4i9S1EX20evpU0LraU4tMre9uQ+jsiflEbBNEJkzsy+ZbPz3WS9pNWWiSju5Ed6DIZa5s5iisollYspuyx9DBCfSWxYEUGRSQDfXR77bxhJU=
+  - secure: K5TtEWOkHgCHpFxhzWlEuwn/JsE4jxrnwrUJ7fwog/vERFFUI8nJ7lP51iaTe0lkBHQjYDjYedKYA0xcloHVyF5/zmEP2HyMolV6uHunf23GJ1t8UYHOlZcbWFoTr+7p6S8LFsld3nMdcD4e5LR1TKFmrffoITqy/PaaKfQ7UvI=
 before_install:
 - openssl aes-256-cbc -K $encrypted_ec7f27486862_key -iv $encrypted_ec7f27486862_iv
   -in deploy-keys.tar.enc -out deploy-keys.tar -d

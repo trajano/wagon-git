@@ -42,7 +42,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
     @Override
     protected String getTestRepositoryUrl() throws IOException {
 
-        return "github:http://site.trajano.net/ZaWorld/";
+        return "github:http://trajano.github.io/ZaWorld/";
     }
 
     /**

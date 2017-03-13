@@ -53,7 +53,7 @@ public class GitUriTest {
     @Test
     public void testGitHubPageEquivalence() throws Exception {
 
-        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://site.trajano.net/trajano"));
+        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io/trajano"));
         final GitUri gitUri = new GitWagon().buildGitUri(URI.create("ssh://git@github.com/trajano/trajano.git?gh-pages#/"));
         assertEquals(gitUri, gitHubUri);
     }
@@ -61,7 +61,7 @@ public class GitUriTest {
     @Test
     public void testGitHubPageEquivalence2() throws Exception {
 
-        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://site.trajano.net/github/trajano"));
+        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io/github/trajano"));
         final GitUri gitUri = new GitWagon().buildGitUri(URI.create("ssh://git@github.com/trajano/github.git?gh-pages#/trajano"));
         assertEquals(gitUri, gitHubUri);
     }
@@ -69,16 +69,32 @@ public class GitUriTest {
     @Test
     public void testGitHubPageEquivalence3() throws Exception {
 
-        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://site.trajano.net/github/../trajano"));
+        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io/github/../trajano"));
         final GitUri gitUri = new GitWagon().buildGitUri(URI.create("ssh://git@github.com/trajano/trajano.git?gh-pages#/"));
         assertEquals(gitUri, gitHubUri);
 
     }
 
     @Test
+    public void testGitHubPageEquivalence4() throws Exception {
+
+        final GitUri gitHubUri1 = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io/github/../trajano"));
+        final GitUri gitHubUri2 = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io/trajano"));
+        assertEquals(gitHubUri2, gitHubUri1);
+
+    }
+
+    @Test
+    public void testUriNormalization() throws Exception {
+
+        assertEquals("http://trajano.github.io/trajano", URI.create("http://trajano.github.io/github/../trajano").normalize().toASCIIString());
+
+    }
+
+    @Test
     public void testGitHubPageRoot() throws Exception {
 
-        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://site.trajano.net"));
+        final GitUri gitHubUri = new GitHubPagesWagon().buildGitUri(URI.create("http://trajano.github.io"));
         final GitUri gitUri = new GitWagon().buildGitUri(URI.create("ssh://git@github.com/trajano/trajano.github.io.git?master#/"));
         assertEquals(gitUri, gitHubUri);
     }

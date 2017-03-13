@@ -48,10 +48,12 @@ public class GitWagon extends AbstractGitWagon {
     /**
      * Constructs the object from a URI string that contains "git:" schema.
      * {@inheritDoc}
+     * @param nonNormalizedGitUri a URI that is not yet normalized.
      */
     @Override
-    public GitUri buildGitUri(final URI gitUri) {
+    public GitUri buildGitUri(final URI nonNormalizedGitUri) {
 
+        final URI gitUri = nonNormalizedGitUri.normalize();
         final String branchName = gitUri.getQuery();
         final String asciiUriString = gitUri.toASCIIString();
         final String gitRepositoryUri = asciiUriString.substring(0, asciiUriString.indexOf('?'));

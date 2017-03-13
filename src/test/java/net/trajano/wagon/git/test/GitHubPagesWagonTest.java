@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.trajano.wagon.git.GitWagon;
 
 import org.apache.maven.wagon.StreamingWagonTestCase;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 /**
  * Tests {@link GitWagon}. Note this test is ignored as it is specific to the
@@ -12,6 +13,19 @@ import org.apache.maven.wagon.StreamingWagonTestCase;
  * except the GitUri building logic.
  */
 public class GitHubPagesWagonTest extends StreamingWagonTestCase {
+
+    /**
+     * Buidls the AuthInfo object.
+     */
+    @Override
+    protected AuthenticationInfo getAuthInfo() {
+        final AuthenticationInfo i = new AuthenticationInfo();
+        i.setUserName("git");
+        i.setPrivateKey(System.getenv("HOME") + "/.m2/github");
+        i.setPassphrase(System.getenv("SONAR_GITHUB_TOKEN"));
+        System.out.println("New " + i);
+        return i;
+    }
 
     /**
      * Protocol hint.

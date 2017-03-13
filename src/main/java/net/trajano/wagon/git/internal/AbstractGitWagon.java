@@ -109,7 +109,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                 git.push()
                         .setRemote(gitEntry.getKey())
                         .setCredentialsProvider(credentialsProvider)
-                        .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback())
+                        .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
                         .call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository()
@@ -256,6 +256,12 @@ public abstract class AbstractGitWagon extends StreamWagon {
             URISyntaxException,
             ResourceDoesNotExistException {
 
+System.out.println(getAuthenticationInfo().getUserName());
+if (getAuthenticationInfo().getPassphrase() != null) {
+System.out.println(getAuthenticationInfo().getPassphrase().substring(0,4));
+}
+System.out.println(getAuthenticationInfo().getPrivateKey());
+
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;
@@ -276,7 +282,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
                     .setCredentialsProvider(credentialsProvider)
                     .setBranch(gitUri.getBranchName())
                     .setDirectory(gitDir)
-                    .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback())
+                    .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
                     .call();
             if (!gitUri.getBranchName()
                     .equals(git.getRepository()

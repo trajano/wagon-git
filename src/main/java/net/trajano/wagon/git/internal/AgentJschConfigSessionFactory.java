@@ -1,5 +1,7 @@
 package net.trajano.wagon.git.internal;
 
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
+
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.OpenSshConfig.Host;
 import org.eclipse.jgit.util.FS;
@@ -23,6 +25,16 @@ import com.jcraft.jsch.agentproxy.usocket.JNAUSocketFactory;
 public final class AgentJschConfigSessionFactory extends JschConfigSessionFactory {
 
     /**
+     * Authentication info.
+     */
+    private final AuthenticationInfo authenticationInfo;
+
+    public AgentJschConfigSessionFactory(final AuthenticationInfo authenticationInfo) {
+
+        this.authenticationInfo = authenticationInfo;
+    }
+
+    /**
      * Does nothing. {@inheritDoc}
      */
     @Override
@@ -32,18 +44,26 @@ public final class AgentJschConfigSessionFactory extends JschConfigSessionFactor
     }
 
     /**
-     * Tries to connect to a SSH agent, if it fails, it uses the default.
+     * Tries using the custom private key first, if not then it tries to connect to a SSH agent, if it fails, it uses the default.
      */
     @Override
-    protected JSch createDefaultJSch(final FS fs) throws JSchException {
+    public JSch createDefaultJSch(final FS fs) throws JSchException {
 
         try {
-            final USocketFactory usf = new JNAUSocketFactory();
-            final Connector con = new SSHAgentConnector(usf);
             final JSch jsch = new JSch();
             JSch.setConfig("PreferredAuthentications", "publickey");
-            final IdentityRepository irepo = new RemoteIdentityRepository(con);
-            jsch.setIdentityRepository(irepo);
+            if (authenticationInfo.getPrivateKey() != null) {
+                if (authenticationInfo.getPassphrase() != null) {
+                    jsch.addIdentity(authenticationInfo.getPrivateKey(), authenticationInfo.getPassphrase());
+                } else {
+                    jsch.addIdentity(authenticationInfo.getPrivateKey());
+                }
+            } else {
+                final USocketFactory usf = new JNAUSocketFactory();
+                final Connector con = new SSHAgentConnector(usf);
+                final IdentityRepository irepo = new RemoteIdentityRepository(con);
+                jsch.setIdentityRepository(irepo);
+            }
             return jsch;
 	} catch (final UnsatisfiedLinkError e) {
             return super.createDefaultJSch(fs);

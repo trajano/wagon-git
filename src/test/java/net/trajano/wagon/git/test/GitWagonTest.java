@@ -66,8 +66,8 @@ public class GitWagonTest extends StreamingWagonTestCase {
     protected void setupWagonTestingFixtures() throws Exception {
 
         Git.init()
-                .setDirectory(gitRemoteDirectory)
-                .call();
+            .setDirectory(gitRemoteDirectory)
+            .call();
         File.createTempFile("temp", null, gitRemoteDirectory);
     }
 

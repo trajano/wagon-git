@@ -22,7 +22,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
  * git URIs fails. This performs an inefficient, but working method of creating
  * a clone per request, but only once per Git repository.
  */
-@Component(role = Wagon.class, hint = "git", instantiationStrategy = "per-lookup")
+@Component(role = Wagon.class,
+    hint = "git",
+    instantiationStrategy = "per-lookup")
 public class GitWagon extends AbstractGitWagon {
 
     /**
@@ -48,7 +50,9 @@ public class GitWagon extends AbstractGitWagon {
     /**
      * Constructs the object from a URI string that contains "git:" schema.
      * {@inheritDoc}
-     * @param nonNormalizedGitUri a URI that is not yet normalized.
+     * 
+     * @param nonNormalizedGitUri
+     *            a URI that is not yet normalized.
      */
     @Override
     public GitUri buildGitUri(final URI nonNormalizedGitUri) {
@@ -63,8 +67,8 @@ public class GitWagon extends AbstractGitWagon {
 
     @Override
     public File getFileForResource(final String resourceName) throws GitAPIException,
-            IOException,
-            URISyntaxException {
+        IOException,
+        URISyntaxException {
 
         // /foo/bar/foo.git + ../bar.git == /foo/bar/bar.git + /
         // /foo/bar/foo.git + ../bar.git/abc == /foo/bar/bar.git + /abc
@@ -74,15 +78,15 @@ public class GitWagon extends AbstractGitWagon {
             resourceGit = getGit(resolved.getGitRepositoryUri());
         } catch (final ResourceDoesNotExistException e) {
             LOG.throwing(this.getClass()
-                    .getName(), "getFileForResource", e);
+                .getName(), "getFileForResource", e);
             return null;
         }
 
         final File workTree = resourceGit.getRepository()
-                .getWorkTree();
+            .getWorkTree();
         final File resolvedFile = new File(workTree, resolved.getResource());
         if (!resolvedFile.getCanonicalPath()
-                .startsWith(workTree.getCanonicalPath())) {
+            .startsWith(workTree.getCanonicalPath())) {
             throw new IOException(String.format(R.getString("notInWorkTree"), resolvedFile, workTree));
         }
         return resolvedFile;

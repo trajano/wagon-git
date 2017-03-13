@@ -22,7 +22,7 @@ public class BrokenGitProviderTest {
 
             @Override
             protected GitUri buildGitUri(final URI gitUri) throws IOException,
-                    URISyntaxException {
+                URISyntaxException {
 
                 final String branchName = gitUri.getQuery();
                 final String asciiUriString = gitUri.toASCIIString();
@@ -33,8 +33,8 @@ public class BrokenGitProviderTest {
 
             @Override
             protected File getFileForResource(final String resourceName) throws GitAPIException,
-                    IOException,
-                    URISyntaxException {
+                IOException,
+                URISyntaxException {
 
                 throw new DetachedHeadException();
             }
@@ -48,7 +48,7 @@ public class BrokenGitProviderTest {
 
             @Override
             protected GitUri buildGitUri(final URI gitUri) throws IOException,
-                    URISyntaxException {
+                URISyntaxException {
 
                 final String branchName = gitUri.getQuery();
                 final String asciiUriString = gitUri.toASCIIString();
@@ -59,8 +59,8 @@ public class BrokenGitProviderTest {
 
             @Override
             protected File getFileForResource(final String resourceName) throws GitAPIException,
-                    IOException,
-                    URISyntaxException {
+                IOException,
+                URISyntaxException {
 
                 throw new IOException();
             }
@@ -74,7 +74,7 @@ public class BrokenGitProviderTest {
 
             @Override
             protected GitUri buildGitUri(final URI gitUri) throws IOException,
-                    URISyntaxException {
+                URISyntaxException {
 
                 final String branchName = gitUri.getQuery();
                 final String asciiUriString = gitUri.toASCIIString();
@@ -85,8 +85,8 @@ public class BrokenGitProviderTest {
 
             @Override
             protected File getFileForResource(final String resourceName) throws GitAPIException,
-                    IOException,
-                    URISyntaxException {
+                IOException,
+                URISyntaxException {
 
                 throw new URISyntaxException("bad", "input");
             }

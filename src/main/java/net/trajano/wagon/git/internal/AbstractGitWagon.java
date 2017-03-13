@@ -87,7 +87,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws URISyntaxException
      */
     protected abstract GitUri buildGitUri(URI repositoryUrl) throws IOException,
-            URISyntaxException;
+        URISyntaxException;
 
     /**
      * This will commit the local changes and push them to the repository. If
@@ -101,19 +101,19 @@ public abstract class AbstractGitWagon extends StreamWagon {
             for (final Entry<String, Git> gitEntry : gitCache.entrySet()) {
                 final Git git = gitEntry.getValue();
                 git.add()
-                        .addFilepattern(".") //$NON-NLS-1$
-                        .call();
+                    .addFilepattern(".") //$NON-NLS-1$
+                    .call();
                 git.commit()
-                        .setMessage(R.getString("commitmessage")) //$NON-NLS-1$
-                        .call();
+                    .setMessage(R.getString("commitmessage")) //$NON-NLS-1$
+                    .call();
                 git.push()
-                        .setRemote(gitEntry.getKey())
-                        .setCredentialsProvider(credentialsProvider)
-                        .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
-                        .call();
+                    .setRemote(gitEntry.getKey())
+                    .setCredentialsProvider(credentialsProvider)
+                    .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
+                    .call();
                 git.close();
                 FileUtils.deleteDirectory(git.getRepository()
-                        .getDirectory());
+                    .getDirectory());
             }
         } catch (final GitAPIException e) {
             throw new ConnectionException(e.getMessage(), e);
@@ -133,12 +133,12 @@ public abstract class AbstractGitWagon extends StreamWagon {
      */
     @Override
     public void fillInputData(final InputData inputData) throws TransferFailedException,
-            ResourceDoesNotExistException,
-            AuthorizationException {
+        ResourceDoesNotExistException,
+        AuthorizationException {
 
         try {
             final File file = getFileForResource(inputData.getResource()
-                    .getName());
+                .getName());
             if (!file.exists()) {
                 throw new ResourceDoesNotExistException(format(R.getString("filenotfound"), file)); //$NON-NLS-1$
             }
@@ -147,7 +147,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
             }
             inputData.setInputStream(new FileInputStream(file));
             inputData.getResource()
-                    .setContentLength(file.length());
+                .setContentLength(file.length());
         } catch (final IOException e) {
             throw new TransferFailedException(e.getMessage(), e);
         } catch (final GitAPIException e) {
@@ -165,13 +165,13 @@ public abstract class AbstractGitWagon extends StreamWagon {
 
         try {
             final File file = getFileForResource(outputData.getResource()
-                    .getName());
+                .getName());
             if (!file.getParentFile()
-                    .mkdirs()
-                    && !file.getParentFile()
-                            .exists()) {
+                .mkdirs()
+                && !file.getParentFile()
+                    .exists()) {
                 throw new TransferFailedException(format(R.getString("unabletocreatedirs"), //$NON-NLS-1$
-                        file.getParentFile()));
+                    file.getParentFile()));
             }
             outputData.setOutputStream(new FileOutputStream(file));
         } catch (final IOException e) {
@@ -198,8 +198,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws ResourceDoesNotExistException
      */
     protected abstract File getFileForResource(String resourceName) throws GitAPIException,
-            IOException,
-            URISyntaxException;
+        IOException,
+        URISyntaxException;
 
     /**
      * {@inheritDoc}
@@ -211,8 +211,8 @@ public abstract class AbstractGitWagon extends StreamWagon {
     @Override
     @SuppressWarnings("all")
     public List<String> getFileList(final String directory) throws TransferFailedException,
-            ResourceDoesNotExistException,
-            AuthorizationException {
+        ResourceDoesNotExistException,
+        AuthorizationException {
 
         final File dir;
         try {
@@ -249,18 +249,19 @@ public abstract class AbstractGitWagon extends StreamWagon {
      * @throws GitAPIException
      * @throws IOException
      * @throws URISyntaxException
-     * @throws ResourceDoesNotExistException remote repository does not exist.
+     * @throws ResourceDoesNotExistException
+     *             remote repository does not exist.
      */
     protected Git getGit(final String gitRepositoryUri) throws GitAPIException,
-            IOException,
-            URISyntaxException,
-            ResourceDoesNotExistException {
+        IOException,
+        URISyntaxException,
+        ResourceDoesNotExistException {
 
-System.out.println(getAuthenticationInfo().getUserName());
-if (getAuthenticationInfo().getPassphrase() != null) {
-System.out.println(getAuthenticationInfo().getPassphrase().substring(0,4));
-}
-System.out.println(getAuthenticationInfo().getPrivateKey());
+        System.out.println(getAuthenticationInfo().getUserName());
+        if (getAuthenticationInfo().getPassphrase() != null) {
+            System.out.println(getAuthenticationInfo().getPassphrase().substring(0, 4));
+        }
+        System.out.println(getAuthenticationInfo().getPrivateKey());
 
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
@@ -274,23 +275,23 @@ System.out.println(getAuthenticationInfo().getPrivateKey());
             credentialsProvider = new PassphraseCredentialsProvider(getAuthenticationInfo().getPassphrase());
         } else {
             credentialsProvider = new UsernamePasswordCredentialsProvider(getAuthenticationInfo().getUserName(), getAuthenticationInfo().getPassword() == null ? "" //$NON-NLS-1$
-                    : getAuthenticationInfo().getPassword());
+            : getAuthenticationInfo().getPassword());
         }
         try {
             final Git git = Git.cloneRepository()
-                    .setURI(gitRepositoryUri)
-                    .setCredentialsProvider(credentialsProvider)
-                    .setBranch(gitUri.getBranchName())
-                    .setDirectory(gitDir)
-                    .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
-                    .call();
+                .setURI(gitRepositoryUri)
+                .setCredentialsProvider(credentialsProvider)
+                .setBranch(gitUri.getBranchName())
+                .setDirectory(gitDir)
+                .setTransportConfigCallback(new JSchAgentCapableTransportConfigCallback(getAuthenticationInfo()))
+                .call();
             if (!gitUri.getBranchName()
-                    .equals(git.getRepository()
-                            .getBranch())) {
+                .equals(git.getRepository()
+                    .getBranch())) {
                 LOG.log(Level.INFO, "missingbranch", gitUri.getBranchName());
                 final RefUpdate refUpdate = git.getRepository()
-                        .getRefDatabase()
-                        .newUpdate(Constants.HEAD, true);
+                    .getRefDatabase()
+                    .newUpdate(Constants.HEAD, true);
                 refUpdate.setForceUpdate(true);
                 refUpdate.link("refs/heads/" + gitUri.getBranchName()); //$NON-NLS-1$
             }
@@ -313,12 +314,12 @@ System.out.println(getAuthenticationInfo().getPrivateKey());
      */
     @Override
     protected void openConnectionInternal() throws ConnectionException,
-            AuthenticationException {
+        AuthenticationException {
 
         URI uri;
         try {
             uri = new URI(new URI(getRepository().getUrl()
-                    .replace("##", "#")).getSchemeSpecificPart()).normalize();
+                .replace("##", "#")).getSchemeSpecificPart()).normalize();
             gitUri = buildGitUri(uri);
         } catch (final URISyntaxException e) {
             throw new ConnectionException(e.getMessage(), e);
@@ -336,9 +337,9 @@ System.out.println(getAuthenticationInfo().getPrivateKey());
     @Override
     @SuppressWarnings("all")
     public void putDirectory(final File sourceDirectory,
-            final String destinationDirectory) throws TransferFailedException,
-                    ResourceDoesNotExistException,
-                    AuthorizationException {
+        final String destinationDirectory) throws TransferFailedException,
+        ResourceDoesNotExistException,
+        AuthorizationException {
 
         try {
             if (!sourceDirectory.isDirectory()) {

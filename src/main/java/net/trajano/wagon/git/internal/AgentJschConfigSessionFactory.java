@@ -39,12 +39,13 @@ public final class AgentJschConfigSessionFactory extends JschConfigSessionFactor
      */
     @Override
     protected void configure(final Host hc,
-            final Session session) {
+        final Session session) {
 
     }
 
     /**
-     * Tries using the custom private key first, if not then it tries to connect to a SSH agent, if it fails, it uses the default.
+     * Tries using the custom private key first, if not then it tries to connect
+     * to a SSH agent, if it fails, it uses the default.
      */
     @Override
     public JSch createDefaultJSch(final FS fs) throws JSchException {
@@ -65,7 +66,7 @@ public final class AgentJschConfigSessionFactory extends JschConfigSessionFactor
                 jsch.setIdentityRepository(irepo);
             }
             return jsch;
-	} catch (final UnsatisfiedLinkError e) {
+        } catch (final UnsatisfiedLinkError e) {
             return super.createDefaultJSch(fs);
         } catch (final AgentProxyException e) {
             return super.createDefaultJSch(fs);

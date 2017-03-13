@@ -38,13 +38,13 @@ public class GitWagonExceptionTest {
         gitRemoteDirectory1 = File.createTempFile("remote", null);
         gitRemoteDirectory1.delete();
         Git.init()
-                .setDirectory(gitRemoteDirectory1)
-                .call();
+            .setDirectory(gitRemoteDirectory1)
+            .call();
         gitRemoteDirectory2 = File.createTempFile("remote", null);
         gitRemoteDirectory2.delete();
         Git.init()
-                .setDirectory(gitRemoteDirectory2)
-                .call();
+            .setDirectory(gitRemoteDirectory2)
+            .call();
     }
 
     @Test(expected = TransferFailedException.class)

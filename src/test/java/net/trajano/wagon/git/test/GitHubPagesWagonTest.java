@@ -19,6 +19,7 @@ public class GitHubPagesWagonTest extends StreamingWagonTestCase {
      */
     @Override
     protected AuthenticationInfo getAuthInfo() {
+
         final AuthenticationInfo i = new AuthenticationInfo();
         i.setUserName("git");
         i.setPrivateKey(System.getenv("HOME") + "/.m2/github");

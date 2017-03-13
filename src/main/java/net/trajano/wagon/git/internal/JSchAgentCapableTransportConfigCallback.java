@@ -12,7 +12,8 @@ import org.eclipse.jgit.transport.Transport;
  *
  * @author Archimedes Trajano
  */
-public class JSchAgentCapableTransportConfigCallback implements TransportConfigCallback {
+public class JSchAgentCapableTransportConfigCallback implements
+    TransportConfigCallback {
 
     /**
      * Authentication info.
@@ -21,9 +22,12 @@ public class JSchAgentCapableTransportConfigCallback implements TransportConfigC
 
     /**
      * Constructs the callback.
-     * @param authenticationInfo authentication info
+     * 
+     * @param authenticationInfo
+     *            authentication info
      */
     public JSchAgentCapableTransportConfigCallback(final AuthenticationInfo authenticationInfo) {
+
         this.authenticationInfo = authenticationInfo;
     }
 

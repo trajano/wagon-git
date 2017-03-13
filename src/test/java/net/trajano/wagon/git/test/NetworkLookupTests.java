@@ -25,7 +25,7 @@ public class NetworkLookupTests {
         final Lookup lookup = new Lookup("www.trajano.net", Type.CNAME);
         lookup.run();
         assertEquals("trajano.net.", ((CNAMERecord) lookup.run()[0]).getTarget()
-                .toString());
+            .toString());
     }
 
     @Test
@@ -43,7 +43,8 @@ public class NetworkLookupTests {
     }
 
     /**
-     * Tests that the URL connection will redirect to the folder if the trailing slash is not provided.
+     * Tests that the URL connection will redirect to the folder if the trailing
+     * slash is not provided.
      */
     @Test
     public void testUrlRedirectToFolder() throws Exception {
@@ -52,7 +53,7 @@ public class NetworkLookupTests {
         urlConnection.connect();
         assertEquals(200, urlConnection.getResponseCode());
         assertEquals("http://trajano.github.io/trajano-portfolio/", urlConnection.getURL()
-                .toExternalForm());
+            .toExternalForm());
         urlConnection.disconnect();
 
     }

@@ -21,6 +21,7 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      *            passphrase
      */
     public PassphraseCredentialsProvider(final String passphrase) {
+
         super();
         this.passphrase = passphrase;
     }
@@ -30,7 +31,7 @@ public class PassphraseCredentialsProvider extends CredentialsProvider {
      */
     @Override
     public boolean get(final URIish uriish,
-            final CredentialItem... items) {
+        final CredentialItem... items) {
 
         for (final CredentialItem item : items) {
             if (item instanceof CredentialItem.StringType) {

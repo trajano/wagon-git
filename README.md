@@ -1,6 +1,8 @@
 Git Wagon Provider
 ==================
 
+[![Build Status](https://travis-ci.org/trajano/wagon-git.svg?branch=master)](https://travis-ci.org/trajano/wagon-git) [![Quality Gate](https://sonarqube.com/api/badges/gate?key=net.trajano.mojo:wagon-git)](https://sonarqube.com/dashboard?id=net.trajano.mojo:wagon-git)
+
 This is a Wagon Provider for Git that works with GitHub Pages and works
 with multi-module projects.
 

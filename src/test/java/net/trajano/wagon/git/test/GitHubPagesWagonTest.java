@@ -1,11 +1,13 @@
 package net.trajano.wagon.git.test;
 
+import java.io.File;
 import java.io.IOException;
-
-import net.trajano.wagon.git.GitWagon;
+import java.net.URISyntaxException;
 
 import org.apache.maven.wagon.StreamingWagonTestCase;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+
+import net.trajano.wagon.git.GitWagon;
 
 /**
  * Tests {@link GitWagon}. Note this test is ignored as it is specific to the
@@ -14,75 +16,79 @@ import org.apache.maven.wagon.authentication.AuthenticationInfo;
  */
 public class GitHubPagesWagonTest extends StreamingWagonTestCase {
 
-    /**
-     * Buidls the AuthInfo object.
-     */
-    @Override
-    protected AuthenticationInfo getAuthInfo() {
+	/**
+	 * Builds the AuthInfo object.
+	 */
+	@Override
+	protected AuthenticationInfo getAuthInfo() {
 
-        final AuthenticationInfo i = new AuthenticationInfo();
-        i.setUserName("git");
-        i.setPrivateKey(System.getenv("HOME") + "/.m2/github");
-        i.setPassphrase(System.getenv("SONAR_GITHUB_TOKEN"));
-        System.out.println("New " + i);
-        return i;
-    }
+		final AuthenticationInfo i = new AuthenticationInfo();
+		i.setUserName("git");
+		try {
+			i.setPrivateKey(new File(Thread.currentThread().getContextClassLoader().getResource("github").toURI())
+					.getAbsolutePath());
+		} catch (URISyntaxException e) {
+			throw new AssertionError(e.getMessage());
+		}
+		i.setPassphrase(System.getenv("SONAR_GITHUB_TOKEN"));
+		return i;
+	}
 
-    /**
-     * Protocol hint.
-     *
-     * @return "github"
-     */
-    @Override
-    protected String getProtocol() {
+	/**
+	 * Protocol hint.
+	 *
+	 * @return "github"
+	 */
+	@Override
+	protected String getProtocol() {
 
-        return "github";
-    }
+		return "github";
+	}
 
-    /**
-     * Unused in the tests.
-     */
-    @Override
-    protected int getTestRepositoryPort() {
+	/**
+	 * Unused in the tests.
+	 */
+	@Override
+	protected int getTestRepositoryPort() {
 
-        return 0;
-    }
+		return 0;
+	}
 
-    /**
-     * An existing GitHub Pages repository. The test runner must have access to
-     * this URL to perform the test.
-     *
-     * @return an existing GitHub Pages repository.
-     */
-    @Override
-    protected String getTestRepositoryUrl() throws IOException {
+	/**
+	 * An existing GitHub Pages repository. The test runner must have access to
+	 * this URL to perform the test.
+	 *
+	 * @return an existing GitHub Pages repository.
+	 */
+	@Override
+	protected String getTestRepositoryUrl() throws IOException {
 
-        return "github:http://trajano.github.io/ZaWorld/";
-    }
+		return "github:http://trajano.github.io/ZaWorld/";
+	}
 
-    /**
-     * Create a repository that has at least one commit.
-     */
-    @Override
-    protected void setupWagonTestingFixtures() throws Exception {
+	/**
+	 * Create a repository that has at least one commit.
+	 */
+	@Override
+	protected void setupWagonTestingFixtures() throws Exception {
 
-    }
+	}
 
-    /**
-     * Unable to change how the timestamps are set, so getIfNewer is not
-     * testable.
-     */
-    @Override
-    protected boolean supportsGetIfNewer() {
+	/**
+	 * Unable to change how the timestamps are set, so getIfNewer is not
+	 * testable.
+	 */
+	@Override
+	protected boolean supportsGetIfNewer() {
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * Remove the "remote" directory.
-     */
-    @Override
-    protected void tearDownWagonTestingFixtures() throws Exception {
+	/**
+	 * Remove the "remote" directory.
+	 */
+	@Override
+	protected void tearDownWagonTestingFixtures() throws Exception {
 
-    }
+	}
 }

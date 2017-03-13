@@ -257,12 +257,6 @@ public abstract class AbstractGitWagon extends StreamWagon {
         URISyntaxException,
         ResourceDoesNotExistException {
 
-        System.out.println(getAuthenticationInfo().getUserName());
-        if (getAuthenticationInfo().getPassphrase() != null) {
-            System.out.println(getAuthenticationInfo().getPassphrase().substring(0, 4));
-        }
-        System.out.println(getAuthenticationInfo().getPrivateKey());
-
         final Git cachedGit = gitCache.get(gitRepositoryUri);
         if (cachedGit != null) {
             return cachedGit;

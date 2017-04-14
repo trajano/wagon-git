@@ -27,7 +27,7 @@
   <properties>
     <jdk.version>1.6</jdk.version>
     <repo.id>wagon-git</repo.id>
-    <surefire.version>2.18.1</surefire.version>
+    <surefire.version>2.20</surefire.version>
   </properties>
   <dependencies>
     <dependency>

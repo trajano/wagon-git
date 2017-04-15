@@ -4,7 +4,8 @@
   <parent>
     <groupId>net.trajano</groupId>
     <artifactId>trajano</artifactId>
-    <version>13</version>
+    <version>14</version>
+    <relativePath/>
   </parent>
   <groupId>net.trajano.wagon</groupId>
   <artifactId>wagon-git</artifactId>

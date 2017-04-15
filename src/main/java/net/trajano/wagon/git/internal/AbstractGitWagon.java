@@ -269,7 +269,7 @@ public abstract class AbstractGitWagon extends StreamWagon {
             credentialsProvider = new PassphraseCredentialsProvider(getAuthenticationInfo().getPassphrase());
         } else {
             credentialsProvider = new UsernamePasswordCredentialsProvider(getAuthenticationInfo().getUserName(), getAuthenticationInfo().getPassword() == null ? "" //$NON-NLS-1$
-            : getAuthenticationInfo().getPassword());
+                            : getAuthenticationInfo().getPassword());
         }
         try {
             final Git git = Git.cloneRepository()

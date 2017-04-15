@@ -317,7 +317,7 @@
                       <pluginExecutionFilter>
                         <groupId>org.codehaus.plexus</groupId>
                         <artifactId>plexus-component-metadata</artifactId>
-                        <versionRange>[1.5.5,)</versionRange>
+                        <versionRange>[1.7.1,)</versionRange>
                         <goals>
                           <goal>generate-metadata</goal>
                         </goals>

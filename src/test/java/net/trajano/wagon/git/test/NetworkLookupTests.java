@@ -49,7 +49,7 @@ public class NetworkLookupTests {
     @Test
     public void testUrlRedirectToFolder() throws Exception {
 
-        final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://trajano.github.io/trajano-portfolio").openConnection();
+        final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://trajano.github.io/trajano-portfolio/").openConnection();
         urlConnection.connect();
         assertEquals(200, urlConnection.getResponseCode());
         assertEquals("http://trajano.github.io/trajano-portfolio/", urlConnection.getURL()
